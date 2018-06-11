@@ -1,0 +1,159 @@
+---
+title: '2018 06 11 Graph 2 Raincloud'
+date: 2018-06-11T10:29:07-07:00
+categories: ["R"]
+tags: [tags"]
+---
+
+ ```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(ggfortify)
+library(infer)
+library(forcats)
+library(ggridges)
+library(here)
+```
+# Graph 2 Dictionary Rain cloud
+
+## Data
+
+
+The first two graphs of this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits. For the second of these graphs, I'm using a dataset called `alldicts` (in its long form: `alldictslong`) which includes many of the same columns as  `allsubs`, including absoltist frequecies of absolutist words as well as frequencies of words in 64 other dictinoaries: 
+
+1. `subreddit` the name of one of 29 subreddits (a somewhat arbitrarily collected subset of the 120k subreddits in the previous datset)
+1. `posts` a count of qualifying\footnote{only posts of 100+ words in length, marked as 'self' posts, ie. user generated text, not external links were counted in this data collection} posts in each subreddit
+1. `wordcount` a sum of the total number of words in all posts in that subreddit
+1. `dictionary` the name of one of 65 dictionaries-- 64 from an outdated version of LIWC\footnote{Linguistic Inquiry and Word Count texual analysis software} plus the absolutis dictionary mentioned above. 
+1. `freq` the frequency of words from each dictionary $$\frac{number\ of\ words\ matching\ dictionary}{number\ of\ total\ words}$$
+
+```{r}
+alldicts <- read_csv(here('static','data','redditProject','output.csv'))
+
+alldicts <- alldicts %>% 
+  filter(subreddit!='subreddit' & subreddit!='TypeError') %>% 
+  mutate_at(vars(ends_with('freq')), as.numeric)
+
+alldictslong <- alldicts %>% 
+  gather(key='dictionary',value='freq',-subreddit,-'count(1)',-'sum(wordcount)') %>% 
+  select(subreddit,dictionary,freq)%>%   
+  mutate_at('dictionary', as.factor) %>% 
+  group_by(subreddit)
+```
+
+## Audience
+
+The intended audience is rather general, but can be divided into a few likely subgroups: 
+
+1. Linguists interested in this method of textual analysis and the language of internet forums
+1. Computer sciencists interested in potential uses of distributed computing
+1. Social scientists studying mood and anxiety disorders such as major depression or generalized anxiety disorder\footnote{Again I refer the reader to \href{http://journals.sagepub.com/doi/abs/10.1177/2167702617747074}{In an Absolute State}  by AlMosaiwi and Johnstone (2018)}
+
+
+## Plot Type: Rain Cloud
+
+### How to read it and what to look for
+
+Rain cloud plots have two parts: a density curve above the axis and a point representation of values below the axis. The curve shows the overall distribution of the data and its most important features are the location of peaks and what skewness it might show. The points below the line augment this representation of data distribution with a single point for every datum and are best used to highlight outliers. 
+
+### Presentation Tips
+
+Rain cloud plots are not incredibly common visualizations, so some explanation may be required. Note that this plot is a 2 dimensional representation of 1-D values. Audiences may be more familiar with violin plots, which show much of the same information, but the raincloud plot replaces some of the redundant information of a violin plot (mirrored representation of distribution) with points to provide additional information about the data generating the curve. Presenters may want to call attention to, explain, or at least mention outling points. Note also that area below curves are generally filled, but can have a set alpha value to prevent overshadowing points they might otherwise cover. 
+
+### Variations and alternatives
+
+Violin plots, histograms, and beeswarm plots all show much of the same information present in rain clouds, though from a different perspective or in a different format. 
+
+## Plot Description
+```{r echo=FALSE, absolutistcolsetup}
+subabs <- alldictslong %>% 
+  mutate(absolutist=case_when(
+           dictionary == 'absolutistfreq' ~ freq,
+           dictionary != 'absolutistfreq' ~ 0)) %>% 
+  group_by(subreddit) %>% 
+  summarize(absolutist=max(absolutist))
+
+alldictslong <- inner_join(alldictslong,subabs,by="subreddit")
+
+```
+```{r echo= FALSE, dictcatManipulation}
+
+alldictslong <- alldictslong %>% 
+  mutate(dictcat=case_when(
+           dictionary %in% c('ifreq','wefreq','ipronfreq','theyfreq','youfreq','shehefreq','pronounfreq','ppronfreq')
+           ~ 'pronons',
+           dictionary %in% c('verbfreq','auxverbfreq','pastfreq','presentfreq','futurefreq')
+           ~ 'verbs',
+           dictionary %in% c('articlefreq','adverbfreq','prepsfreq','conjfreq','negatefreq','quantfreq','numberfreq','swearfreq','functfreq')
+           ~ 'otherfunctional',
+           dictionary %in% c('socialfreq','familyfreq','friendfreq','humansfreq')
+           ~ 'people',
+           dictionary %in% c('affectfreq','posemofreq','negemofreq','anxfreq','angerfreq','sadfreq')
+           ~ 'feelings',
+           dictionary %in% c('cogmechfreq','insightfreq','causefreq','discrepfreq','tentatfreq','certainfreq','inhibfreq','inclfreq','exclfreq')
+           ~ 'unlabeled',
+           dictionary %in% c('perceptfreq','seefreq','hearfreq','feelfreq')
+           ~ 'sense',
+           dictionary %in% c('biofreq','bodyfreq','healthfreq','sexualfreq','ingestfreq')
+           ~ 'bio',
+           dictionary %in% c('relativfreq','motionfreq','spacefreq','timefreq')
+           ~ 'physics',
+           dictionary %in% c('workfreq','achievefreq','leisurefreq','homefreq','moneyfreq','religfreq','deathfreq')
+           ~ 'life',
+           dictionary %in% c('assentfreq','nonflfreq','fillerfreq')
+           ~ 'idk'))
+```
+
+
+```{r message=FALSE,echo= FALSE, rainplot }
+rainplot <- alldictslong %>%   
+  filter(dictionary!='functfreq') %>% 
+  ggplot(aes(x=freq,y=dictionary))+
+    geom_density_ridges(jittered_points=TRUE, 
+      position="raincloud", scale=1, alpha=.5,aes(point_color=absolutist))+
+  facet_wrap(~dictcat,scales='free_y',ncol=3)
+```
+
+
+### Representation
+
+The dictionaries in this dataset do have some domain overlap, and it is easier to understand plots of smaller subsets of the dictionary collection than the whole thing at once, so the code below creates of dctionary categories. 
+
+
+```{r ref.label='dictcatManipulation'}
+
+```
+
+The resulting collection of rainclouds shows the distribution of frequency values for each dictionary in each subreddit. 
+
+```{r fig.height=10,fig.width=8, message=FALSE}
+rainplot
+```
+
+I was hoping with this visualization to find some patterns or commonalities in the distribution of different dictionary frequencies. That didn't really happen here. More data points might help once I have  a larger dataset. 
+
+Also of interest to me in this dataset are correlations between various dictionaries and the absolutist dictionary, so the points in my rainclouds are colored continuously by the absolutist score for each subreddit. Where these colors show a pattern, such as in the negative emotion plot, rather than seeming random, such as in the plot for auxilary verbs, this visualization suggests a correlation between that dictionary and the absolutist dictionary. This too might be more clearly meaningful with more data points. 
+
+### Methods
+
+To make this plot I filter out the functional dictionary (because it makes x scales for all other dictionaries harder to read), then make a ggplot call with x as frequency and y set to the category want to create density plots for. The geom used here, `geom_density_ridges`, is from the package `ggridges` and takes an argument `jittered_points =TRUE` to include the scattered points and `position='raincloud` to position the points below the horizontal density ridges. 
+
+To group the plots in a more meaningful way I've also added a facet wrap by dictionary category (note that the y scale must be free, or you'll get many copies o the full graph with only a few lines of each including any data. , as defined at the begining of the previous section. 
+
+```{r ref.label='rainplot'}
+
+```
+
+I am also tempted by a verion of this plot with free x scales, which would allow each dictionary category to use the full length of the x axis, as the actual values of frequencies are of less importance here than the shape of the distribution. But in general, this setting should be used with caution. 
+
+```{r  fig.height=10,fig.width=8, message=FALSE,echo= FALSE}
+rainplotfree <- alldictslong %>%   
+  filter(dictionary!='functfreq') %>% 
+  ggplot(aes(x=freq,y=dictionary))+
+    geom_density_ridges(jittered_points=TRUE, 
+      position="raincloud", scale=1, alpha=.5,aes(point_color=absolutist))+
+  facet_wrap(~dictcat,scales='free',ncol=3)
+
+rainplotfree
+```

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Tags on CS631: Take a sad plot and make it better</title>
+    <link>/tags/tags/</link>
+    <description>Recent content in Tags on CS631: Take a sad plot and make it better</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-US</language>
+    <lastBuildDate>Mon, 11 Jun 2018 10:29:07 -0700</lastBuildDate>
+    
+	<atom:link href="/tags/tags/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>2018 06 11 Graph 2 Raincloud</title>
+      <link>/post/2018-06-11-graph-2-raincloud/</link>
+      <pubDate>Mon, 11 Jun 2018 10:29:07 -0700</pubDate>
+      
+      <guid>/post/2018-06-11-graph-2-raincloud/</guid>
+      <description>Graph 2 Dictionary Rain cloud Data The first two graphs of this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits. For the second of these graphs, I’m using a dataset called alldicts (in its long form: alldictslong) which includes many of the same columns as allsubs, including absoltist frequecies of absolutist words as well as frequencies of words in 64 other dictinoaries:</description>
+    </item>
+    
+    <item>
+      <title>2018 06 10 Graph 1 Subreddit Scatter</title>
+      <link>/post/2018-06-10-graph-1-subreddit-scatter/</link>
+      <pubDate>Sun, 10 Jun 2018 15:50:12 -0700</pubDate>
+      
+      <guid>/post/2018-06-10-graph-1-subreddit-scatter/</guid>
+      <description>Graph 1 Subreddit Scatter Data The first two graphs of this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits.
+The first dataset, called allsubs includes 5 columns :
+subreddit the name of one of ~120k subreddits posts a count of (qualifying) posts in each subreddit wordcount a sum of the total number of words in all posts in that subreddit abscount a sum of the total number of ‘absolutist’ words in posts</description>
+    </item>
+    
+  </channel>
+</rss>

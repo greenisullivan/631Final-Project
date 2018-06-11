@@ -1,0 +1,86 @@
+---
+title: '2018 06 10 Graph 1 Subreddit Scatter'
+date: 2018-06-10T15:50:12-07:00
+categories: ["R"]
+tags: [tags"]
+---
+
+
+
+<div id="graph-1-subreddit-scatter" class="section level1">
+<h1>Graph 1 Subreddit Scatter</h1>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>The first two graphs of this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits.</p>
+<p>The first dataset, called <code>allsubs</code> includes 5 columns :</p>
+<ol style="list-style-type: decimal">
+<li><code>subreddit</code> the name of one of ~120k subreddits</li>
+<li><code>posts</code> a count of (qualifying) posts in each subreddit</li>
+<li><code>wordcount</code> a sum of the total number of words in all posts in that subreddit</li>
+<li><code>abscount</code> a sum of the total number of ‘absolutist’ words in posts<br />
+</li>
+<li><code>freq</code> the frequency of absolutist words in qualifying posts, calculated as <span class="math display">\[\frac{number\ of\ absolutist\ words}{number\ of\ total\ words}\]</span></li>
+</ol>
+<pre class="r"><code>allsubs &lt;- read_tsv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;output.tsv&#39;))</code></pre>
+</div>
+<div id="audience" class="section level2">
+<h2>Audience</h2>
+<p>The end user intended audience is rather general, but can be divided into a few likely subgroups:</p>
+<ol style="list-style-type: decimal">
+<li>Linguists interested in this method of textual analysis and the language of internet forums</li>
+<li>Computer sciencists interested in potential uses of distributed computing</li>
+<li>Social scientists studying mood and anxiety disorders such as major depression or generalized anxiety disorder</li>
+</ol>
+<p>However, with this graph in particular, the most important thing is a quick glance at the data, and one should probably use actual statistics before deciding to subset the data as I’m about to suggest. Really, this graph is just part of an exploratory data analysis to call attention to the need to throw out some of our data points, and the primary audience is the graph maker.</p>
+</div>
+<div id="plot-type-scatter-plot-for-exploratory-data-analysis-eda" class="section level2">
+<h2>Plot Type: Scatter plot for Exploratory Data Analysis (EDA)</h2>
+<div id="how-to-read-it-and-what-to-look-for" class="section level3">
+<h3>How to read it and what to look for:</h3>
+<p>Scatter plots are very simple. They include one variable on each axis and usually have one point for every data entry. When used for EDA, it can show correlation or other relationships between the two variables or highlight relevant outliers.</p>
+</div>
+<div id="presentation-tips" class="section level3">
+<h3>Presentation tips</h3>
+<p>Audiences are generally comfortable with scatter plots. To help show the density where points overlap, it can be useful to set <code>alpha</code> to a value less tahn 1, which will make points semi transparent so overlapping points can be seen and darker areas can be highlihgted as areas with high density.</p>
+<p>If comparison to a specific value, is important it can be helpful to add a reference line at that value, but otherwise I prefer to leave gridlines out, as the shape of the data and relationships between values are generally be more important than their exact values.</p>
+</div>
+<div id="variations-and-alternatives" class="section level3">
+<h3>Variations and alternatives</h3>
+<p>Color or shape can represent additional dimesions of the data. Scatterplots specifically to show correlation are common and should be square to reflect normalization of variables. Histograms and density plots are good EDA alternatives for investigating only one variable at a time.</p>
+</div>
+</div>
+<div id="plot-description" class="section level2">
+<h2>Plot Description</h2>
+<div id="representation" class="section level3">
+<h3>Representation</h3>
+<p><img src="/post/2018-06-10-graph-1-subreddit-scatter_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>In the plot below, I show absolutist frequency v. wordcount. The result illustrates a quirk of the data that I should have anticipated: ie, when word count is low, it is much more common to see high frequency values, because the denominator of <span class="math display">\[\frac{number\ of\ absolutist\ words}{number\ of\ total\ words}\]</span> is low. As such it makes sense to remove this irregular chunk of data from our investigation of absolutist frequency across subreddits.</p>
+<p><img src="/post/2018-06-10-graph-1-subreddit-scatter_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>Below is a bonus version with labels, which again is not necessarily useful for publishing, but does highlight the subreddits the data was collected to study as well as a few other interesting groups.</p>
+<p><img src="/post/2018-06-10-graph-1-subreddit-scatter_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="methods" class="section level3">
+<h3>Methods</h3>
+<p>To plot the large intial plot, one simply adds a <code>geom_point</code> layer to a ggplot, with appropriately specified x, y, and alpha values.</p>
+<pre class="r"><code>absvword &lt;- allsubs %&gt;% 
+  ggplot(aes(x=wordcount, y=freq))+
+    geom_point(alpha=.2)</code></pre>
+<p>The second plot filters the data to only subreddits containing more than 1000 posts before passing the set to the same ggplot call, and adding labels and title to explain these changes.</p>
+<pre class="r"><code>ofinterest&lt;- c(&#39;SuicideWatch&#39;, &#39;Anxiety&#39;,&#39;depression&#39;, &#39;raisedbynarcissists&#39;)
+
+absvwordsmall &lt;- allsubs %&gt;%
+  filter(posts&gt;1000) %&gt;% 
+  ggplot(aes(x=wordcount, y=freq))+
+    geom_point(alpha=.2)+
+    labs(title=&#39;Absolutist frequency v. Wordcount for forums with 1k or more posts&#39;, x=&#39;Wordcount (minimum = 1 mil )&#39;)</code></pre>
+<p>For my final version of this plot, I’ve created a list of a subreddits of interest, and added two layers of annotation,</p>
+<pre class="r"><code>absvwordsmalllabs &lt;- allsubs %&gt;%
+  filter(posts&gt;1000) %&gt;% 
+  ggplot(aes(x=wordcount, y=freq))+
+    geom_point(alpha=.2)+
+    labs(title=&#39;Absolutist frequency v. Wordcount for forums with 1k or more posts&#39;, x=&#39;Wordcount (minimum = 1 mil)&#39;)+
+    geom_text(aes(label=subreddit), check_overlap = TRUE, color=&#39;blue&#39;)+
+    geom_text(data=subset(allsubs, subreddit %in% ofinterest),aes(label=subreddit), check_overlap = FALSE, color=&#39;red&#39;)</code></pre>
+</div>
+</div>
+</div>

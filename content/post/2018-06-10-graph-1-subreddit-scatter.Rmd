@@ -1,0 +1,130 @@
+---
+title: '2018 06 10 Graph 1 Subreddit Scatter'
+date: 2018-06-10T15:50:12-07:00
+categories: ["R"]
+tags: [tags"]
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(ggfortify)
+library(infer)
+library(forcats)
+library(ggridges)
+library(here)
+```
+
+# Graph 1 Subreddit Scatter
+
+## Data
+
+The first two graphs of this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits. 
+
+The first dataset, called `allsubs` includes 5 columns : 
+
+1. `subreddit` the name of one of ~120k subreddits
+1. `posts` a count of (qualifying\footnote{only posts of 100+ words in length, marked as 'self' posts, ie. user generated text, not external links were counted in this data collection}) posts in each subreddit
+1. `wordcount` a sum of the total number of words in all posts in that subreddit
+1.  `abscount` a sum of the total number of 'absolutist'\footnote{Examples of absolutist words are: `always', `never', `completely', etc. For definitions and selection process of `absolutist' words, see: \href{http://journals.sagepub.com/doi/abs/10.1177/2167702617747074}{In an Absolute State}  by AlMosaiwi and Johnstone (2018)} words in posts  
+1. `freq` the frequency of absolutist words in qualifying posts, calculated as $$\frac{number\ of\ absolutist\ words}{number\ of\ total\ words}$$
+
+
+```{r message=FALSE, warning=FALSE}
+allsubs <- read_tsv(here('static','data','redditProject','output.tsv'))
+```
+## Audience
+
+The end user intended audience is rather general, but can be divided into a few likely subgroups: 
+
+1. Linguists interested in this method of textual analysis and the language of internet forums
+1. Computer sciencists interested in potential uses of distributed computing
+1. Social scientists studying mood and anxiety disorders such as major depression or generalized anxiety disorder\footnote{Again I refer the reader to \href{http://journals.sagepub.com/doi/abs/10.1177/2167702617747074}{In an Absolute State}  by AlMosaiwi and Johnstone (2018)}
+
+However, with this graph in particular, the most important thing is a quick glance at the data, and one should probably use actual statistics before deciding to subset the data as I'm about to suggest. Really, this graph is just part of an exploratory data analysis to call attention to the need to throw out some of our data points, and the primary audience is the graph maker. 
+
+## Plot Type: Scatter plot for Exploratory Data Analysis (EDA)
+```{r bigscatter, echo=FALSE}
+absvword <- allsubs %>% 
+  ggplot(aes(x=wordcount, y=freq))+
+    geom_point(alpha=.2)
+```
+
+```{r medscatter, echo=FALSE}
+ofinterest<- c('SuicideWatch', 'Anxiety','depression', 'raisedbynarcissists')
+
+absvwordsmall <- allsubs %>%
+  filter(posts>1000) %>% 
+  ggplot(aes(x=wordcount, y=freq))+
+    geom_point(alpha=.2)+
+    labs(title='Absolutist frequency v. Wordcount for forums with 1k or more posts', x='Wordcount (minimum = 1 mil )')
+```
+
+```{r finalscatter, echo=FALSE}
+
+absvwordsmalllabs <- allsubs %>%
+  filter(posts>1000) %>% 
+  ggplot(aes(x=wordcount, y=freq))+
+    geom_point(alpha=.2)+
+    labs(title='Absolutist frequency v. Wordcount for forums with 1k or more posts', x='Wordcount (minimum = 1 mil)')+
+    geom_text(aes(label=subreddit), check_overlap = TRUE, color='blue')+
+    geom_text(data=subset(allsubs, subreddit %in% ofinterest),aes(label=subreddit), check_overlap = FALSE, color='red')
+
+```
+
+### How to read it and what to look for: 
+
+Scatter plots are very simple. They include one variable on each axis and usually have one point for every data entry. When used for EDA, it can show correlation or other relationships between the two variables or highlight relevant outliers. 
+
+### Presentation tips
+
+Audiences are generally comfortable with scatter plots. To help show the density where points overlap, it can be useful to set `alpha` to a value less tahn 1, which will make points semi transparent so overlapping points can be seen and darker areas can be highlihgted as areas with high density. 
+
+If comparison to a specific value, is important it can be helpful to add a reference line at that value, but otherwise I prefer to leave gridlines out, as the shape of the data and relationships between values are generally be more important than their exact values. 
+
+### Variations and alternatives
+
+Color or shape can represent additional dimesions of the data. Scatterplots specifically to show correlation are common and should be square to reflect normalization of variables. Histograms and density plots are good EDA alternatives for investigating only one variable at a time. 
+
+## Plot Description
+
+### Representation
+
+```{r echo=FALSE, warning=FALSE}
+absvword
+```
+
+In the plot below, I show absolutist frequency v. wordcount. The result illustrates a quirk of the data that I should have anticipated: ie, when word count is low, it is much more common to see high frequency values, because the denominator of $$\frac{number\ of\ absolutist\ words}{number\ of\ total\ words}$$ is low. As such it makes sense to 
+remove this irregular chunk of data from our investigation of absolutist frequency across subreddits.  
+
+```{r echo=FALSE}
+absvwordsmall
+```
+
+Below is a bonus version with labels, which again is not necessarily useful for publishing, but does highlight the subreddits the data was collected to study as well as a few other interesting groups. 
+
+```{r echo=FALSE}
+absvwordsmalllabs
+```
+
+### Methods
+
+To plot the large intial plot, one simply adds a `geom_point` layer to a ggplot, with appropriately specified x, y, and alpha values. 
+
+```{r ref.label='bigscatter'}
+
+```
+
+The second plot filters the data to only subreddits containing more than 1000 posts before passing the set to the same ggplot call, and adding labels and title to explain these changes.  
+
+```{r ref.label='medscatter'}
+
+```
+
+
+For my final version of this plot, I've created a list of a subreddits of interest, and added two layers of annotation,  
+```{r ref.label='finalscatter'}
+
+```

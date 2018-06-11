@@ -1,0 +1,111 @@
+---
+title: '2018 06 11 Graph 2 Raincloud'
+date: 2018-06-11T10:29:07-07:00
+categories: ["R"]
+tags: [tags"]
+---
+
+
+
+<div id="graph-2-dictionary-rain-cloud" class="section level1">
+<h1>Graph 2 Dictionary Rain cloud</h1>
+<div id="data" class="section level2">
+<h2>Data</h2>
+<p>The first two graphs of this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits. For the second of these graphs, I’m using a dataset called <code>alldicts</code> (in its long form: <code>alldictslong</code>) which includes many of the same columns as <code>allsubs</code>, including absoltist frequecies of absolutist words as well as frequencies of words in 64 other dictinoaries:</p>
+<ol style="list-style-type: decimal">
+<li><code>subreddit</code> the name of one of 29 subreddits (a somewhat arbitrarily collected subset of the 120k subreddits in the previous datset)</li>
+<li><code>posts</code> a count of qualifying posts in each subreddit</li>
+<li><code>wordcount</code> a sum of the total number of words in all posts in that subreddit</li>
+<li><code>dictionary</code> the name of one of 65 dictionaries– 64 from an outdated version of LIWC plus the absolutis dictionary mentioned above.</li>
+<li><code>freq</code> the frequency of words from each dictionary <span class="math display">\[\frac{number\ of\ words\ matching\ dictionary}{number\ of\ total\ words}\]</span></li>
+</ol>
+<pre class="r"><code>alldicts &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;output.csv&#39;))</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>alldicts &lt;- alldicts %&gt;% 
+  filter(subreddit!=&#39;subreddit&#39; &amp; subreddit!=&#39;TypeError&#39;) %&gt;% 
+  mutate_at(vars(ends_with(&#39;freq&#39;)), as.numeric)
+
+alldictslong &lt;- alldicts %&gt;% 
+  gather(key=&#39;dictionary&#39;,value=&#39;freq&#39;,-subreddit,-&#39;count(1)&#39;,-&#39;sum(wordcount)&#39;) %&gt;% 
+  select(subreddit,dictionary,freq)%&gt;%   
+  mutate_at(&#39;dictionary&#39;, as.factor) %&gt;% 
+  group_by(subreddit)</code></pre>
+</div>
+<div id="audience" class="section level2">
+<h2>Audience</h2>
+<p>The intended audience is rather general, but can be divided into a few likely subgroups:</p>
+<ol style="list-style-type: decimal">
+<li>Linguists interested in this method of textual analysis and the language of internet forums</li>
+<li>Computer sciencists interested in potential uses of distributed computing</li>
+<li>Social scientists studying mood and anxiety disorders such as major depression or generalized anxiety disorder</li>
+</ol>
+</div>
+<div id="plot-type-rain-cloud" class="section level2">
+<h2>Plot Type: Rain Cloud</h2>
+<div id="how-to-read-it-and-what-to-look-for" class="section level3">
+<h3>How to read it and what to look for</h3>
+<p>Rain cloud plots have two parts: a density curve above the axis and a point representation of values below the axis. The curve shows the overall distribution of the data and its most important features are the location of peaks and what skewness it might show. The points below the line augment this representation of data distribution with a single point for every datum and are best used to highlight outliers.</p>
+</div>
+<div id="presentation-tips" class="section level3">
+<h3>Presentation Tips</h3>
+<p>Rain cloud plots are not incredibly common visualizations, so some explanation may be required. Note that this plot is a 2 dimensional representation of 1-D values. Audiences may be more familiar with violin plots, which show much of the same information, but the raincloud plot replaces some of the redundant information of a violin plot (mirrored representation of distribution) with points to provide additional information about the data generating the curve. Presenters may want to call attention to, explain, or at least mention outling points. Note also that area below curves are generally filled, but can have a set alpha value to prevent overshadowing points they might otherwise cover.</p>
+</div>
+<div id="variations-and-alternatives" class="section level3">
+<h3>Variations and alternatives</h3>
+<p>Violin plots, histograms, and beeswarm plots all show much of the same information present in rain clouds, though from a different perspective or in a different format.</p>
+</div>
+</div>
+<div id="plot-description" class="section level2">
+<h2>Plot Description</h2>
+<div id="representation" class="section level3">
+<h3>Representation</h3>
+<p>The dictionaries in this dataset do have some domain overlap, and it is easier to understand plots of smaller subsets of the dictionary collection than the whole thing at once, so the code below creates of dctionary categories.</p>
+<pre class="r"><code>alldictslong &lt;- alldictslong %&gt;% 
+  mutate(dictcat=case_when(
+           dictionary %in% c(&#39;ifreq&#39;,&#39;wefreq&#39;,&#39;ipronfreq&#39;,&#39;theyfreq&#39;,&#39;youfreq&#39;,&#39;shehefreq&#39;,&#39;pronounfreq&#39;,&#39;ppronfreq&#39;)
+           ~ &#39;pronons&#39;,
+           dictionary %in% c(&#39;verbfreq&#39;,&#39;auxverbfreq&#39;,&#39;pastfreq&#39;,&#39;presentfreq&#39;,&#39;futurefreq&#39;)
+           ~ &#39;verbs&#39;,
+           dictionary %in% c(&#39;articlefreq&#39;,&#39;adverbfreq&#39;,&#39;prepsfreq&#39;,&#39;conjfreq&#39;,&#39;negatefreq&#39;,&#39;quantfreq&#39;,&#39;numberfreq&#39;,&#39;swearfreq&#39;,&#39;functfreq&#39;)
+           ~ &#39;otherfunctional&#39;,
+           dictionary %in% c(&#39;socialfreq&#39;,&#39;familyfreq&#39;,&#39;friendfreq&#39;,&#39;humansfreq&#39;)
+           ~ &#39;people&#39;,
+           dictionary %in% c(&#39;affectfreq&#39;,&#39;posemofreq&#39;,&#39;negemofreq&#39;,&#39;anxfreq&#39;,&#39;angerfreq&#39;,&#39;sadfreq&#39;)
+           ~ &#39;feelings&#39;,
+           dictionary %in% c(&#39;cogmechfreq&#39;,&#39;insightfreq&#39;,&#39;causefreq&#39;,&#39;discrepfreq&#39;,&#39;tentatfreq&#39;,&#39;certainfreq&#39;,&#39;inhibfreq&#39;,&#39;inclfreq&#39;,&#39;exclfreq&#39;)
+           ~ &#39;unlabeled&#39;,
+           dictionary %in% c(&#39;perceptfreq&#39;,&#39;seefreq&#39;,&#39;hearfreq&#39;,&#39;feelfreq&#39;)
+           ~ &#39;sense&#39;,
+           dictionary %in% c(&#39;biofreq&#39;,&#39;bodyfreq&#39;,&#39;healthfreq&#39;,&#39;sexualfreq&#39;,&#39;ingestfreq&#39;)
+           ~ &#39;bio&#39;,
+           dictionary %in% c(&#39;relativfreq&#39;,&#39;motionfreq&#39;,&#39;spacefreq&#39;,&#39;timefreq&#39;)
+           ~ &#39;physics&#39;,
+           dictionary %in% c(&#39;workfreq&#39;,&#39;achievefreq&#39;,&#39;leisurefreq&#39;,&#39;homefreq&#39;,&#39;moneyfreq&#39;,&#39;religfreq&#39;,&#39;deathfreq&#39;)
+           ~ &#39;life&#39;,
+           dictionary %in% c(&#39;assentfreq&#39;,&#39;nonflfreq&#39;,&#39;fillerfreq&#39;)
+           ~ &#39;idk&#39;))</code></pre>
+<p>The resulting collection of rainclouds shows the distribution of frequency values for each dictionary in each subreddit.</p>
+<pre class="r"><code>rainplot</code></pre>
+<p><img src="/post/2018-06-11-graph-2-raincloud_files/figure-html/unnamed-chunk-3-1.png" width="768" /></p>
+<p>I was hoping with this visualization to find some patterns or commonalities in the distribution of different dictionary frequencies. That didn’t really happen here. More data points might help once I have a larger dataset.</p>
+<p>Also of interest to me in this dataset are correlations between various dictionaries and the absolutist dictionary, so the points in my rainclouds are colored continuously by the absolutist score for each subreddit. Where these colors show a pattern, such as in the negative emotion plot, rather than seeming random, such as in the plot for auxilary verbs, this visualization suggests a correlation between that dictionary and the absolutist dictionary. This too might be more clearly meaningful with more data points.</p>
+</div>
+<div id="methods" class="section level3">
+<h3>Methods</h3>
+<p>To make this plot I filter out the functional dictionary (because it makes x scales for all other dictionaries harder to read), then make a ggplot call with x as frequency and y set to the category want to create density plots for. The geom used here, <code>geom_density_ridges</code>, is from the package <code>ggridges</code> and takes an argument <code>jittered_points =TRUE</code> to include the scattered points and <code>position='raincloud</code> to position the points below the horizontal density ridges.</p>
+<p>To group the plots in a more meaningful way I’ve also added a facet wrap by dictionary category (note that the y scale must be free, or you’ll get many copies o the full graph with only a few lines of each including any data. , as defined at the begining of the previous section.</p>
+<pre class="r"><code>rainplot &lt;- alldictslong %&gt;%   
+  filter(dictionary!=&#39;functfreq&#39;) %&gt;% 
+  ggplot(aes(x=freq,y=dictionary))+
+    geom_density_ridges(jittered_points=TRUE, 
+      position=&quot;raincloud&quot;, scale=1, alpha=.5,aes(point_color=absolutist))+
+  facet_wrap(~dictcat,scales=&#39;free_y&#39;,ncol=3)</code></pre>
+<p>I am also tempted by a verion of this plot with free x scales, which would allow each dictionary category to use the full length of the x axis, as the actual values of frequencies are of less importance here than the shape of the distribution. But in general, this setting should be used with caution.</p>
+<p><img src="/post/2018-06-11-graph-2-raincloud_files/figure-html/unnamed-chunk-5-1.png" width="768" /></p>
+</div>
+</div>
+</div>
