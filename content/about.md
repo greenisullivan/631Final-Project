@@ -1,12 +1,17 @@
 +++
-date = "2015-08-22"
+date = "2018-05-31"
 title = "About"
 +++
 
-_With this theme, it is possible to add small sections that only contains one page like this. It will automatically appears in the header, at the end._
+_About KChalk_
 
-Along with [Ford Prefect](https://en.wikipedia.org/wiki/Ford_Prefect_\(character\)), Dent barely escapes the Earth's destruction as it is demolished to make way for a *hyperspace bypass*. Arthur spends the next several years, still wearing his dressing gown, helplessly launched from crisis to crisis while trying to straighten out his lifestyle.  
- 
-> He rather enjoys tea, but seems to have trouble obtaining it in the far reaches of the galaxy.  
- 
-In time, he learns how to fly and carves a niche for himself as a sandwich-maker.
+I am a full time graduate student at Oregon Health and Science University (OHSU) in the CS masters program taught by OHSU's Center for Spoken Language Understanding. My undergraduate degree was a BA Linguistics from Reed College. I'm currently focusing on computational and medical applications of linguistics to amplify the impact my studies of the field might have on academic and society.  
+
+_About OHSU's CS631 DataVis_
+
+This site has been constructed as an assignment for OHSU's CS 631 Principles and Practices of Data Viualization. The course covers the most effective methods of data visualization as well as some of aspects of the ethics, critical thinking, and commuication associated with data visualization.  
+
+
+_About this final project_
+
+The project presented in this webpage consists of four graph briefs, describing graph types and examples and the code that produces them. These projects can be found in the [name of section and link to be here]. Also hosted here aer some example Xarigan slides made during the course which are available at [this link](slides/lab06.html)
