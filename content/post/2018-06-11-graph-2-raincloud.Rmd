@@ -1,5 +1,5 @@
 ---
-title: '2018 06 11 Graph 2 Raincloud'
+title: 'Graph 2 Raincloud'
 date: 2018-06-11T10:29:07-07:00
 categories: ["R"]
 tags: [tags"]

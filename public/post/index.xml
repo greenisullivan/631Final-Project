@@ -6,13 +6,31 @@
     <description>Recent content in Post on CS631: Take a sad plot and make it better</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Mon, 11 Jun 2018 10:29:07 -0700</lastBuildDate>
+    <lastBuildDate>Wed, 13 Jun 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/post/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>2018 06 11 Graph 2 Raincloud</title>
+      <title>Graph 4: TBA </title>
+      <link>/post/graph-4-tba/</link>
+      <pubDate>Wed, 13 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/graph-4-tba/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Graph 5: Finale</title>
+      <link>/post/graph-5-finale/</link>
+      <pubDate>Wed, 13 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/graph-5-finale/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Graph 2 Raincloud</title>
       <link>/post/2018-06-11-graph-2-raincloud/</link>
       <pubDate>Mon, 11 Jun 2018 10:29:07 -0700</pubDate>
       
@@ -21,7 +39,16 @@
     </item>
     
     <item>
-      <title>2018 06 10 Graph 1 Subreddit Scatter</title>
+      <title>Graph 3: TBA</title>
+      <link>/post/graph-3-tba/</link>
+      <pubDate>Mon, 11 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/graph-3-tba/</guid>
+      <description>Default stuff</description>
+    </item>
+    
+    <item>
+      <title>Graph 1 Subreddit Scatter</title>
       <link>/post/2018-06-10-graph-1-subreddit-scatter/</link>
       <pubDate>Sun, 10 Jun 2018 15:50:12 -0700</pubDate>
       
