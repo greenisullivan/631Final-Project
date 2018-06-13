@@ -1,7 +1,7 @@
 ---
-title: 'Graph 3: TBA'
+title: 'Graph 3: Radar'
 author: ''
-date: '2018-06-11'
+date: '2018-06-12'
 slug: graph-3-tba
 categories: []
 tags: []
@@ -13,4 +13,38 @@ meta_img: /images/image.jpg
 
 
 
-<p>Default stuff</p>
+<pre class="r"><code>alldicts &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;medoutput.csv&#39;))</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   subreddit = col_character(),
+##   `count(1)` = col_integer(),
+##   `sum(wordcount)` = col_integer()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>alldicts &lt;- alldicts %&gt;% 
+  filter(subreddit!=&#39;subreddit&#39; &amp; subreddit!=&#39;TypeError&#39;) %&gt;% 
+  mutate_at(vars(ends_with(&#39;freq&#39;)), as.numeric)
+
+alldictslong &lt;- alldicts %&gt;% 
+  gather(key=&#39;dictionary&#39;,value=&#39;freq&#39;,-subreddit,-&#39;count(1)&#39;,-&#39;sum(wordcount)&#39;) %&gt;% 
+  select(subreddit,dictionary,freq)%&gt;%   
+  mutate_at(&#39;dictionary&#39;, as.factor) %&gt;% 
+  group_by(subreddit)</code></pre>
+<pre class="r"><code> normalit&lt;-function(m){
+   (m - min(m))/(max(m)-min(m))
+ }
+
+dictsubset=c(&#39;absolutistfreq&#39;,&#39;pronounfreq&#39;,&#39;socialfreq&#39;,&#39;perceptfreq&#39;,&#39;sadfreq&#39;)
+
+ofinterestplus=c(&#39;SuicideWatch&#39;, &#39;Anxiety&#39;,&#39;depression&#39;, &#39;raisedbynarcissists&#39;,&#39;trees&#39;,&#39;gaybros&#39;,&#39;TwoXChromosomes&#39;)
+
+alldictslong %&gt;%
+  filter(subreddit %in% ofinterestplus) %&gt;% 
+  filter(dictionary %in% dictsubset | dictcat==&#39;feelings&#39;) %&gt;% 
+  select(&#39;subreddit&#39;, &#39;freq&#39;,&#39;dictionary&#39;) %&gt;% 
+  spread(dictionary,freq)-&gt; alldictsradar
+
+ggradar(alldictsradar,grid.mid=.1,grid.max = .25, group.line.width = .75,
+  group.point.size = 3,label.gridline.max = FALSE,label.gridline.mid = FALSE,label.gridline.min = FALSE)</code></pre>
+<p><img src="/post/2018-06-11-graph-3-tba_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>

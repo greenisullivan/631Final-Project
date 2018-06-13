@@ -1,0 +1,294 @@
+---
+title: "datamanipuation"
+author: "Kendra Chalkley"
+date: "March 16, 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+#library(ggalt)
+library(ggfortify)
+library(infer)
+library(forcats)
+```
+
+```{r}
+allsubs <- read_tsv('output.tsv')
+alldicts <- read_csv('output.csv')
+
+alldicts <- alldicts %>% 
+  filter(subreddit!='subreddit') %>% 
+  mutate_at(vars(ends_with('freq')), as.numeric)
+
+
+alldictslong <- alldicts %>% 
+  gather(key='dictionary',value='freq',-subreddit,-'count(1)',-'sum(wordcount)') %>% 
+  select(subreddit,dictionary,freq)%>%   
+  mutate_at('dictionary', as.factor) %>% 
+  group_by(subreddit)
+
+
+meanfreqs <- alldictslong %>% 
+  group_by(dictionary) %>% 
+  summarize(mean(freq))
+
+meanfreqs
+
+testgroups <- alldicts %>% 
+  filter(subreddit=='Anxiety' |subreddit=='depression' |subreddit=='SuicideWatch') %>% 
+  gather(key='dictionary',value='freq',-subreddit,-'count(1)',-'sum(wordcount)') %>% 
+  select(subreddit,dictionary,freq)%>%   
+  mutate_at('dictionary', as.factor) %>% 
+  group_by(subreddit)
+
+
+absolutistlong <- alldictslong %>% 
+  filter(dictionary=='absolutistfreq')
+
+absolutisttestlong <- testgroups %>% 
+  filter(dictionary=='absolutistfreq')
+
+anxf <- 0.012818174
+depf <- 0.015059767
+suif <- 0.015706359
+
+#depf=as.numeric(depression['freq'])
+#suif=as.numeric(suicide['freq'])
+
+logallsubs <- allsubs %>% 
+  mutate(freq=log(freq))
+
+```
+
+
+```{r}
+allscatterplot <- alldictslong %>% 
+  ggplot(aes(x=fct_reorder(dictionary,freq, .fun=mean), y=freq,color=subreddit))+
+  geom_point()
+
+testplot <- testgroups %>% 
+  ggplot(aes(x=fct_reorder(dictionary,freq, .fun=mean), y=freq,color=subreddit))+
+  geom_point()
+
+allscatterplot
+testplot
+```
+```{r}
+nofuncscatterplot <- alldictslong %>% 
+  filter(dictionary!='functfreq') %>% 
+  ggplot(aes(x=fct_reorder(dictionary,freq, .fun=mean), y=freq,color=subreddit))+
+  geom_point()+
+  geom_encircle(data=filter(alldictslong,dictionary=='negatefreq') ,s_shape=.2,spread=.0001)
+
+nofunctestplot <- testgroups %>% 
+  filter(dictionary!='functfreq') %>% 
+  ggplot(aes(x=fct_reorder(dictionary,freq, .fun=mean), y=freq,color=subreddit))+
+  geom_point()+
+  geom_encircle(data=absolutisttestlong,s_shape=.2,spread=.0001)
+
+
+nofuncscatterplot
+nofunctestplot
+```
+
+```{r}
+plot <- ggplot(allsubs,aes(x=freq))+
+  geom_histogram(bins=50)+
+  geom_vline(xintercept = anxf, color='red')+
+  geom_vline(xintercept = depf, color='blue')+
+  geom_vline(xintercept = suif, color='purple')
+
+plot
+
+```
+
+```{r}
+nposts <- filter(allsubs, wordcount>=30000, freq>0.000001)
+
+nplot <- nposts %>% 
+  ggplot()+
+  geom_histogram(aes(x=freq),bins=100)+
+  scale_x_continuous(breaks = seq(0, .02, by = .01))+
+  geom_vline(xintercept = anxf, color='red')+
+  geom_vline(xintercept = depf, color='blue')+
+  geom_vline(xintercept = suif, color='purple')
+
+nplot
+
+mean=mean(allsubs['freq'])
+```
+
+tomorrow look at confidence intervals
+```{r}
+test <- allsubs %>% 
+  filter(subreddit=='Anxiety' |subreddit=='depression' |subreddit=='SuicideWatch')
+
+allsubsquorum <- filter(allsubs, wordcount>=500000, freq>0.000001) 
+
+bigscatter <- allsubs %>% 
+  ggplot(aes(x=wordcount,y=freq))+
+  geom_point()+
+  geom_encircle(data=test,spread=.0001, size=2, color='blue')
+
+
+bigscatterq <- allsubsquorum %>% 
+  ggplot(aes(x=wordcount,y=freq))+
+  geom_point()+
+  geom_encircle(data=test,spread=.0001, size=2, color='blue')
+
+bigscatter
+bigscatterq
+
+```
+
+
+# More data
+```{r}
+
+
+```
+
+```{r}
+dplot <- alldicts %>% 
+  ggplot(alpha=.2)+
+  geom_histogram(aes(x=absolutistfreq, fill='red'),stat = "bin")+
+  geom_histogram(aes(x=ingestfreq, fill='blue', legend='ingest'),stat = "bin")+
+  geom_histogram(aes(x=causefreq, fill='green'),stat = "bin")+
+  geom_histogram(aes(x=insightfreq, fill='purple'),stat = "bin")+
+  scale_x_continuous(breaks = seq(0, .4, by = .01))
+
+dplot
+
+```
+```{r}
+dplot <- alldicts %>% 
+  ggplot(x='subreddit')+
+  geom
+
+dplot
+
+alldicts['absolutistfreq']
+
+```
+#Permutation testing
+```{r}
+null_absdist <- alldicts %>% 
+  specify(formula= absolutistfreq~subreddit) %>% 
+  hypothesize(null='independence') %>% 
+  generate(reps=100, type='permute')
+
+ggplot(null_absdist, aes)
+```
+
+
+```{r}
+library(ggfortify)
+library(infer)
+
+```
+
+```{r}
+allsubs <- read_tsv('data/redditProject/output.tsv')
+alldicts <- read_csv('data/redditProject/output.csv')
+
+alldicts <- alldicts %>% 
+  filter(subreddit!='subreddit') %>% 
+  mutate_at(vars(ends_with('freq')), as.numeric)
+
+alldictslong <- alldicts %>% 
+  gather(key='dictionary',value='freq',-subreddit,-'count(1)',-'sum(wordcount)') %>% 
+  select(subreddit,dictionary,freq)%>%   
+  mutate_at('dictionary', as.factor) %>% 
+  group_by(subreddit)
+
+
+meanfreqs <- alldictslong %>% 
+  group_by(dictionary) %>% 
+  summarize(avg=mean(freq))
+
+meanfreqs %>% 
+  filter(dictionary!='functfreq') %>% 
+  ggplot(aes(x=avg))+
+  geom_histogram(bins=1000)
+
+meanfreqs <- meanfreqs %>% 
+  mutate(freqbin=case_when(
+    avg >.075 ~'high',
+    avg >.03 & avg <=.075 ~'medhigh',
+    avg >.015 & avg <=.03 ~'med',
+    avg >.007 & avg <=.015 ~'medlow',
+    avg <=.007 ~'low'
+  ))
+
+subabs <- alldictslong %>% 
+  mutate(absolutist=case_when(
+           dictionary == 'absolutistfreq' ~ freq,
+           dictionary != 'absolutistfreq' ~ 0)) %>% 
+  group_by(subreddit) %>% 
+  summarize(absolutist=max(absolutist))
+
+  
+alldictslong <- inner_join(alldictslong,meanfreqs,by="dictionary")
+alldictslong <- inner_join(alldictslong,subabs,by="subreddit")
+
+```
+
+```{r}
+alldictslong %>%   
+  filter(freqbin=='high') %>% 
+  ggplot(aes(x=fct_reorder(subreddit,absolutist,.fun=max), y=freq))+
+    facet_wrap(~dictionary, scales='free')+
+    geom_point()+
+    geom_text(check_overlap = TRUE, aes(label=subreddit))+
+    geom_smooth(aes(y=freq,group=1))+
+    geom_smooth(aes(y=absolutist, group=1),color='red')
+
+alldictslong %>%   
+  filter(freqbin=='medhigh') %>% 
+  ggplot(aes(x=fct_reorder(subreddit,absolutist,.fun=max), y=freq))+
+  facet_wrap(~dictionary, scales='free')+
+  geom_point()+
+  geom_text(check_overlap = TRUE, aes(label=subreddit))+
+  geom_smooth(aes(y=freq,group=1))+
+  geom_smooth(aes(y=absolutist, group=1),color='red')
+
+
+alldictslong %>%   
+  filter(freqbin=='med') %>% 
+  ggplot(aes(x=fct_reorder(subreddit,absolutist,.fun=max), y=freq))+
+  ggtitle("med")+
+  facet_wrap(~dictionary, scales='free')+
+  geom_point()+
+  geom_text(check_overlap = TRUE, aes(label=subreddit))+
+  geom_smooth(aes(y=freq,group=1))+
+  geom_smooth(aes(y=absolutist, group=1),color='red')
+
+
+alldictslong %>%   
+  filter(freqbin=='medlow') %>% 
+  ggplot(aes(x=fct_reorder(subreddit,absolutist,.fun=max), y=freq))+
+  ggtitle("medlow")+
+  facet_wrap(~dictionary, scales='free')+
+  geom_point()+
+  geom_text(check_overlap = TRUE, aes(label=subreddit))+
+  geom_smooth(aes(y=freq,group=1))+
+  geom_smooth(aes(y=absolutist, group=1),color='red')
+
+#ggsave('medlowplot.png', width = 10, height = 7)
+
+alldictslong %>%   
+  filter(freqbin=='low') %>% 
+  ggplot(aes(x=fct_reorder(subreddit,absolutist,.fun=max), y=freq))+
+  ggtitle("low")+
+  facet_wrap(~dictionary, scales='free')+
+  geom_point()+
+  geom_text(check_overlap = TRUE, aes(label=subreddit))+
+  geom_smooth(aes(y=freq,group=1))+
+  geom_smooth(aes(y=absolutist, group=1),color='red')
+
+
+```
+

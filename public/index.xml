@@ -6,10 +6,19 @@
     <description>Recent content on CS631: Take a sad plot and make it better</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
-    <lastBuildDate>Wed, 13 Jun 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 14 Jun 2018 00:00:00 +0000</lastBuildDate>
     
 	<atom:link href="/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Graph 5: Finale</title>
+      <link>/post/graph-5-finale/</link>
+      <pubDate>Thu, 14 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/post/graph-5-finale/</guid>
+      <description>clusters &amp;lt;- data_frame(points=c(1,2,3,4,5,6), d8=as.numeric(c( 7.60615490e-04, 8.81908709e-04,-1.56654507e-03, 3.77986549e-03,-1.63674792e-03,-4.81345630e-04)), d4=as.numeric(c(1.86674735e-05, -2.72863437e-03,-9.06914202e-03,1.02285896e-02, 2.31427145e-03, 2.56901917e-03)), d3=as.numeric(c(-1.48133438e-03, - 1.76566835e-02, -1.67195678e-02, -1.02206745e-02, -1.87481255e-02, -7.42778303e-03)), d2=as.numeric(c( 4.80471808e-02, 1.89865712e-02, 5.51073493e-02, 2.23686838e-02, 1.43890028e-02, 6.07876642e-03)), d1=as.numeric(c(-1.13749846e-01, 5.48473256e-03, 4.34622091e-01, 2.74660413e-01,-4.63572014e-02, 1.14269692e-01)), d5=as.numeric(c(2.06638859e-03,-3.87265890e-04, 1.01578702e-02,-6.94434057e-03,-8.86661139e-04,-9.31756128e-04)), d7=as.numeric(c(1.69428752e-03,-6.38068621e-04, 1.48049274e-02,-9.33937030e-03, 1.79049026e-04,-3.83044531e-03)), d6=as.numeric(c( 2.88096926e-05, -2.97027559e-03, 6.14116840e-04, 2.33207017e-03, 3.14692892e-03, -7.87809028e-05)), d9=as.numeric(c(9.11478978e-04,-1.31201233e-03,-2.25258870e-03, 8.62742511e-04, 7.19635940e-04, 1.50543228e-03)), d10=as.numeric(c( 1.23790323e-03, 8.22313616e-04,-3.53520503e-03, 8.67177324e-04,-2.65875996e-03, 4.55303452e-03))) %&amp;gt;% mutate_all(funs(rescale)) ggradar(filter(clusters, points==.0))+ ggtitle(&amp;quot;point1&amp;quot;) ggradar(filter(clusters, points==.2))+ ggtitle(&amp;quot;point2&amp;quot;) ggradar(filter(clusters, points==.4))+ ggtitle(&amp;quot;point3&amp;quot;) ggradar(filter(clusters, points==.6))+ ggtitle(&amp;quot;point4&amp;quot;) ggradar(filter(clusters, points==.8))+ ggtitle(&amp;quot;point5&amp;quot;) ggradar(filter(clusters, points==1))+ ggtitle(&amp;quot;point6&amp;quot;) ggradar(filter(clusters, points&amp;lt;=.</description>
+    </item>
     
     <item>
       <title>Graph 4: TBA </title>
@@ -21,12 +30,12 @@
     </item>
     
     <item>
-      <title>Graph 5: Finale</title>
-      <link>/post/graph-5-finale/</link>
-      <pubDate>Wed, 13 Jun 2018 00:00:00 +0000</pubDate>
+      <title>Graph 3: Radar</title>
+      <link>/post/graph-3-tba/</link>
+      <pubDate>Tue, 12 Jun 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/graph-5-finale/</guid>
-      <description></description>
+      <guid>/post/graph-3-tba/</guid>
+      <description>alldicts &amp;lt;- read_csv(here(&amp;#39;static&amp;#39;,&amp;#39;data&amp;#39;,&amp;#39;redditProject&amp;#39;,&amp;#39;medoutput.csv&amp;#39;)) ## Parsed with column specification: ## cols( ## .default = col_double(), ## subreddit = col_character(), ## `count(1)` = col_integer(), ## `sum(wordcount)` = col_integer() ## ) ## See spec(...) for full column specifications. alldicts &amp;lt;- alldicts %&amp;gt;% filter(subreddit!=&amp;#39;subreddit&amp;#39; &amp;amp; subreddit!=&amp;#39;TypeError&amp;#39;) %&amp;gt;% mutate_at(vars(ends_with(&amp;#39;freq&amp;#39;)), as.numeric) alldictslong &amp;lt;- alldicts %&amp;gt;% gather(key=&amp;#39;dictionary&amp;#39;,value=&amp;#39;freq&amp;#39;,-subreddit,-&amp;#39;count(1)&amp;#39;,-&amp;#39;sum(wordcount)&amp;#39;) %&amp;gt;% select(subreddit,dictionary,freq)%&amp;gt;% mutate_at(&amp;#39;dictionary&amp;#39;, as.factor) %&amp;gt;% group_by(subreddit)  normalit&amp;lt;-function(m){ (m - min(m))/(max(m)-min(m)) } dictsubset=c(&amp;#39;absolutistfreq&amp;#39;,&amp;#39;pronounfreq&amp;#39;,&amp;#39;socialfreq&amp;#39;,&amp;#39;perceptfreq&amp;#39;,&amp;#39;sadfreq&amp;#39;) ofinterestplus=c(&amp;#39;SuicideWatch&amp;#39;, &amp;#39;Anxiety&amp;#39;,&amp;#39;depression&amp;#39;, &amp;#39;raisedbynarcissists&amp;#39;,&amp;#39;trees&amp;#39;,&amp;#39;gaybros&amp;#39;,&amp;#39;TwoXChromosomes&amp;#39;) alldictslong %&amp;gt;% filter(subreddit %in% ofinterestplus) %&amp;gt;% filter(dictionary %in% dictsubset | dictcat==&amp;#39;feelings&amp;#39;) %&amp;gt;% select(&amp;#39;subreddit&amp;#39;, &amp;#39;freq&amp;#39;,&amp;#39;dictionary&amp;#39;) %&amp;gt;% spread(dictionary,freq)-&amp;gt; alldictsradar ggradar(alldictsradar,grid.</description>
     </item>
     
     <item>
@@ -36,15 +45,6 @@
       
       <guid>/post/2018-06-11-graph-2-raincloud/</guid>
       <description>Graph 2 Dictionary Rain cloud Data The first two graphs of this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits. For the second of these graphs, I’m using a dataset called alldicts (in its long form: alldictslong) which includes many of the same columns as allsubs, including absoltist frequecies of absolutist words as well as frequencies of words in 64 other dictinoaries:</description>
-    </item>
-    
-    <item>
-      <title>Graph 3: TBA</title>
-      <link>/post/graph-3-tba/</link>
-      <pubDate>Mon, 11 Jun 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/post/graph-3-tba/</guid>
-      <description>Default stuff</description>
     </item>
     
     <item>

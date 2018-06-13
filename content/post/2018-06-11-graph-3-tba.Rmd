@@ -1,7 +1,7 @@
 ---
-title: 'Graph 3: TBA'
+title: 'Graph 3: Radar'
 author: ''
-date: '2018-06-11'
+date: '2018-06-12'
 slug: graph-3-tba
 categories: []
 tags: []
@@ -11,15 +11,92 @@ lobsters_id: ''
 meta_img: /images/image.jpg
 ---
 
- ```{r setup, include=FALSE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
+library(tidyverse) 
 library(ggplot2)
+#library(ggalt)
+library(ggradar)
+library(extrafont)
 library(ggfortify)
 library(infer)
 library(forcats)
 library(ggridges)
 library(here)
+library(scales)
 ```
 
-Default stuff
+```{r}
+alldicts <- read_csv(here('static','data','redditProject','medoutput.csv'))
+
+alldicts <- alldicts %>% 
+  filter(subreddit!='subreddit' & subreddit!='TypeError') %>% 
+  mutate_at(vars(ends_with('freq')), as.numeric)
+
+alldictslong <- alldicts %>% 
+  gather(key='dictionary',value='freq',-subreddit,-'count(1)',-'sum(wordcount)') %>% 
+  select(subreddit,dictionary,freq)%>%   
+  mutate_at('dictionary', as.factor) %>% 
+  group_by(subreddit)
+```
+
+```{r echo=FALSE, absolutistcolsetup}
+subabs <- alldictslong %>% 
+  mutate(absolutist=case_when(
+           dictionary == 'absolutistfreq' ~ freq,
+           dictionary != 'absolutistfreq' ~ 0)) %>% 
+  group_by(subreddit) %>% 
+  summarize(absolutist=max(absolutist))
+
+alldictslong <- inner_join(alldictslong,subabs,by="subreddit")
+
+```
+```{r echo= FALSE, dictcatManipulation}
+
+alldictslong <- alldictslong %>% 
+  mutate(dictcat=case_when(
+           dictionary %in% c('ifreq','wefreq','ipronfreq','theyfreq','youfreq','shehefreq','pronounfreq','ppronfreq')
+           ~ 'pronons',
+           dictionary %in% c('verbfreq','auxverbfreq','pastfreq','presentfreq','futurefreq')
+           ~ 'verbs',
+           dictionary %in% c('articlefreq','adverbfreq','prepsfreq','conjfreq','negatefreq','quantfreq','numberfreq','swearfreq','functfreq')
+           ~ 'otherfunctional',
+           dictionary %in% c('socialfreq','familyfreq','friendfreq','humansfreq')
+           ~ 'people',
+           dictionary %in% c('affectfreq','posemofreq','negemofreq','anxfreq','angerfreq','sadfreq')
+           ~ 'feelings',
+           dictionary %in% c('cogmechfreq','insightfreq','causefreq','discrepfreq','tentatfreq','certainfreq','inhibfreq','inclfreq','exclfreq')
+           ~ 'unlabeled',
+           dictionary %in% c('perceptfreq','seefreq','hearfreq','feelfreq')
+           ~ 'sense',
+           dictionary %in% c('biofreq','bodyfreq','healthfreq','sexualfreq','ingestfreq')
+           ~ 'bio',
+           dictionary %in% c('relativfreq','motionfreq','spacefreq','timefreq')
+           ~ 'physics',
+           dictionary %in% c('workfreq','achievefreq','leisurefreq','homefreq','moneyfreq','religfreq','deathfreq')
+           ~ 'life',
+           dictionary %in% c('assentfreq','nonflfreq','fillerfreq')
+           ~ 'idk'))
+```
+
+
+
+```{r}
+
+ normalit<-function(m){
+   (m - min(m))/(max(m)-min(m))
+ }
+
+dictsubset=c('absolutistfreq','pronounfreq','socialfreq','perceptfreq','sadfreq')
+
+ofinterestplus=c('SuicideWatch', 'Anxiety','depression', 'raisedbynarcissists','trees','gaybros','TwoXChromosomes')
+
+alldictslong %>%
+  filter(subreddit %in% ofinterestplus) %>% 
+  filter(dictionary %in% dictsubset | dictcat=='feelings') %>% 
+  select('subreddit', 'freq','dictionary') %>% 
+  spread(dictionary,freq)-> alldictsradar
+
+ggradar(alldictsradar,grid.mid=.1,grid.max = .25, group.line.width = .75,
+  group.point.size = 3,label.gridline.max = FALSE,label.gridline.mid = FALSE,label.gridline.min = FALSE)
+```

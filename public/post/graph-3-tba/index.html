@@ -16,8 +16,8 @@
 <meta property="og:locale" content="nn_NO" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/post/graph-3-tba/" />
-<meta property="og:title" content="Graph 3: TBA" />
-<meta property="twitter:title" content="Graph 3: TBA">
+<meta property="og:title" content="Graph 3: Radar" />
+<meta property="twitter:title" content="Graph 3: Radar">
 
     <meta property="og:image" content="//images/image.jpg">
     <meta property="twitter:card" content="summary">
@@ -29,7 +29,7 @@
 <title>
 
 
-     CS631: Take a sad plot and make it better - Graph 3: TBA 
+     CS631: Take a sad plot and make it better - Graph 3: Radar 
 
 </title>
 <link rel="canonical" href="/post/graph-3-tba/">
@@ -1101,14 +1101,48 @@ div.main .content .markdown pre, div.main .content .markdown pre code {
         <div class="content">
             <div class="page-heading">
 
-    Graph 3: TBA
+    Graph 3: Radar
 
 </div>
 
             <div class="markdown">
                 
     
-    <p>Default stuff</p>
+    <pre class="r"><code>alldicts &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;medoutput.csv&#39;))</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   subreddit = col_character(),
+##   `count(1)` = col_integer(),
+##   `sum(wordcount)` = col_integer()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>alldicts &lt;- alldicts %&gt;% 
+  filter(subreddit!=&#39;subreddit&#39; &amp; subreddit!=&#39;TypeError&#39;) %&gt;% 
+  mutate_at(vars(ends_with(&#39;freq&#39;)), as.numeric)
+
+alldictslong &lt;- alldicts %&gt;% 
+  gather(key=&#39;dictionary&#39;,value=&#39;freq&#39;,-subreddit,-&#39;count(1)&#39;,-&#39;sum(wordcount)&#39;) %&gt;% 
+  select(subreddit,dictionary,freq)%&gt;%   
+  mutate_at(&#39;dictionary&#39;, as.factor) %&gt;% 
+  group_by(subreddit)</code></pre>
+<pre class="r"><code> normalit&lt;-function(m){
+   (m - min(m))/(max(m)-min(m))
+ }
+
+dictsubset=c(&#39;absolutistfreq&#39;,&#39;pronounfreq&#39;,&#39;socialfreq&#39;,&#39;perceptfreq&#39;,&#39;sadfreq&#39;)
+
+ofinterestplus=c(&#39;SuicideWatch&#39;, &#39;Anxiety&#39;,&#39;depression&#39;, &#39;raisedbynarcissists&#39;,&#39;trees&#39;,&#39;gaybros&#39;,&#39;TwoXChromosomes&#39;)
+
+alldictslong %&gt;%
+  filter(subreddit %in% ofinterestplus) %&gt;% 
+  filter(dictionary %in% dictsubset | dictcat==&#39;feelings&#39;) %&gt;% 
+  select(&#39;subreddit&#39;, &#39;freq&#39;,&#39;dictionary&#39;) %&gt;% 
+  spread(dictionary,freq)-&gt; alldictsradar
+
+ggradar(alldictsradar,grid.mid=.1,grid.max = .25, group.line.width = .75,
+  group.point.size = 3,label.gridline.max = FALSE,label.gridline.mid = FALSE,label.gridline.min = FALSE)</code></pre>
+<p><img src="/post/2018-06-11-graph-3-tba_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 
 
             </div>
