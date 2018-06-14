@@ -27,41 +27,106 @@ library(scales)
 ```
 
 ```{r}
-clusters <- data_frame(points=c(1,2,3,4,5,6),
-                       d8=as.numeric(c( 7.60615490e-04, 8.81908709e-04,-1.56654507e-03, 3.77986549e-03,-1.63674792e-03,-4.81345630e-04)),
-                       d4=as.numeric(c(1.86674735e-05, -2.72863437e-03,-9.06914202e-03,1.02285896e-02, 2.31427145e-03, 2.56901917e-03)),
-                       d3=as.numeric(c(-1.48133438e-03, - 1.76566835e-02,  -1.67195678e-02,  -1.02206745e-02, -1.87481255e-02, -7.42778303e-03)),
-                       d2=as.numeric(c( 4.80471808e-02, 1.89865712e-02, 5.51073493e-02, 2.23686838e-02, 1.43890028e-02, 6.07876642e-03)),
-                       d1=as.numeric(c(-1.13749846e-01, 5.48473256e-03, 4.34622091e-01, 2.74660413e-01,-4.63572014e-02, 1.14269692e-01)), 
-                       d5=as.numeric(c(2.06638859e-03,-3.87265890e-04, 1.01578702e-02,-6.94434057e-03,-8.86661139e-04,-9.31756128e-04)),
-                       d7=as.numeric(c(1.69428752e-03,-6.38068621e-04, 1.48049274e-02,-9.33937030e-03, 1.79049026e-04,-3.83044531e-03)),
-                       d6=as.numeric(c( 2.88096926e-05, -2.97027559e-03,  6.14116840e-04,  2.33207017e-03,  3.14692892e-03, -7.87809028e-05)),
-                       d9=as.numeric(c(9.11478978e-04,-1.31201233e-03,-2.25258870e-03, 8.62742511e-04, 7.19635940e-04, 1.50543228e-03)),
-                       d10=as.numeric(c( 1.23790323e-03, 8.22313616e-04,-3.53520503e-03, 8.67177324e-04,-2.65875996e-03, 4.55303452e-03))) %>% 
-  mutate_all(funs(rescale)) 
+radar_colour=rep(c("#FF5A5F", "#FFB400", "#007A87",  "#8CE071", "#7B0051", 
+                       "#00D1C1", "#FFAA91", "#B4A76C", "#9CA299", "#565A5C", "#00A04B", "#E54C20"), 100)
 
-ggradar(filter(clusters, points==.0))+
-  ggtitle("point1")
-ggradar(filter(clusters, points==.2))+
-  ggtitle("point2")
-ggradar(filter(clusters, points==.4))+
-  ggtitle("point3")
-ggradar(filter(clusters, points==.6))+
-  ggtitle("point4")
-ggradar(filter(clusters, points==.8))+
-  ggtitle("point5")
-ggradar(filter(clusters, points==1))+
-  ggtitle("point6")
+clusters <- read_csv(here('static','data','redditProject','centers'))
+
+clusters <- clusters %>% 
+  mutate_at(vars(starts_with('d')),rescale)
+clusters
+
+dlabels= c('verb, work, i','relative, cogmech, present','social, i, affect','ppron, pronoun, social','1 funct, pronoun, cogmech','5 affect, pos emotion, relative','7 money, cause, present','6 work, money, bio','9 percept, cogmech, negemo ','10 bio, work, cogmech','11 money, cogmech, bio')
+
+ggradar(clusters[1,], grid.label.size = 5,
+        group.point.size = 3,
+        axis.label.size = 2,
+        axis.labels = dlabels,
+        legend.text.size = 9,
+        group.colours = radar_colour)+
+  ggtitle("point1")+
+  theme(legend.position="bottom") + 
+  theme(text=element_text(family='Lato')) 
 
 
-ggradar(filter(clusters, points<=.0))
-ggradar(filter(clusters, points<=.2))
-ggradar(filter(clusters, points<=.4))
-ggradar(filter(clusters, points<=.6))
-ggradar(filter(clusters, points<=.8))
-radar <- ggradar(filter(clusters, points<=1))+
-  ggtitle("6 cluster centers in 10 dimensions")
+ggradar(clusters[2,], grid.label.size = 5,
+        group.point.size = 4,
+        axis.label.size = 3,
+        axis.labels = dlabels,
+        legend.text.size = 9,
+        group.colours = radar_colour[2])+
+  ggtitle("point2")+
+  theme(legend.position="bottom") + 
+  theme(text=element_text(family='Lato')) 
 
+ggradar(clusters[3,],grid.label.size = 5,
+        group.point.size = 4,
+        axis.label.size = 3,
+        axis.labels = dlabels,
+        legend.text.size = 9,
+        group.colours = radar_colour[3])+
+  ggtitle("point3")+
+  theme(legend.position="bottom") + 
+  theme(text=element_text(family='Lato')) 
+
+
+ggradar(clusters[4,], grid.label.size = 5,
+        group.point.size = 4,
+        axis.label.size = 3,
+        axis.labels = dlabels,
+        legend.text.size = 9,
+        group.colours = radar_colour[4])+
+  ggtitle("point4")+
+  theme(legend.position="bottom") + 
+  theme(text=element_text(family='Lato')) 
+
+
+ggradar(clusters[5,], grid.label.size = 5,
+        group.point.size = 4,
+        axis.label.size = 3,
+        axis.labels = dlabels,
+        legend.text.size = 9,
+        group.colours = radar_colour[5])+
+  ggtitle("point5")+
+  theme(legend.position="bottom") + 
+  theme(text=element_text(family='Lato')) 
+
+          
+          
+ggradar(clusters[6,], grid.label.size = 5,
+        group.point.size = 4,
+        axis.label.size = 3,
+        axis.labels = dlabels,
+        legend.text.size = 9, 
+        group.colours = radar_colour[6])+
+  ggtitle("point6")+
+  theme(legend.position="bottom") + 
+  theme(text=element_text(family='Lato')) 
+
+
+ggradar(clusters[7,], grid.label.size = 5,
+        group.point.size = 4,
+        axis.label.size = 3,
+        axis.labels = dlabels,
+        legend.text.size = 9,
+        group.colours = radar_colour[7])+
+  ggtitle("point7")+
+  theme(legend.position="bottom") + 
+  theme(text=element_text(family='Lato')) 
+
+
+radar <- ggradar(clusters, 
+                 font.radar = 'Lato', 
+                 grid.label.size = 0,
+                 group.point.size = 3,
+                 axis.label.size = 3,
+                 axis.labels = dlabels,
+                 legend.text.size = 7)+
+  ggtitle("7 cluster centers in 11 dimensions")+
+  theme(legend.position="bottom") + 
+  theme(text=element_text(family='Lato')) 
+
+radar
 #ggsave("clusterRadar.pdf",plot = radar)
 
 ```
