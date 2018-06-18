@@ -48,7 +48,7 @@ corlong &lt;- melt(correlations ) %&gt;%
    setNames(c(&#39;orig&#39;, &#39;red_dim&#39;, &#39;correlation&#39;))
 
 
-ggplot(corlong, aes(x=orig, y=red_dim, fill=correlation))+
+ggplot(corlong, aes(x=red_dim, y=orig, fill=correlation))+
   geom_tile()+ 
   theme(axis.text.x = element_text(angle = 60, hjust = 1))+
   scale_fill_distiller(palette = &quot;PRGn&quot;)</code></pre>

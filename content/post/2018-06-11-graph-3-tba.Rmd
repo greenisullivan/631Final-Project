@@ -11,9 +11,9 @@ lobsters_id: ''
 meta_img: /images/image.jpg 
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE} 
 knitr::opts_chunk$set(echo = TRUE)
-library(tidyverse)
+library(tidyverse) 
 library(ggplot2)
 #library(ggalt)
 library(ggradar)
@@ -42,7 +42,7 @@ alldictslong <- alldicts %>%
   group_by(subreddit)
 ```
 
-```{r echo=FALSE, absolutistcolsetup}
+```{r echo=FALSE, absolutistcolsetup} 
 subabs <- alldictslong %>% 
   mutate(absolutist=case_when(
            dictionary == 'absolutistfreq' ~ freq,

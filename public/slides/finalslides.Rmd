@@ -1,5 +1,5 @@
 ---
-title: "Take a Sad Plot And Make It Better 3.0"
+title: "Take a Sad Plot and Make it Better 3.0"
 author: "Kendra Chalkley"
 date: "June 18, 2018"
 output: 
@@ -11,10 +11,19 @@ output:
         countIncrementalSlides: false
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r echo=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, 
+                      fig.width = 10.5, fig.height = 4, 
+                      comment = NA, rows.print = 16)
 ```
 
+class: inverse, middle, center 
+
+# Title Slide 
+
+
+---
+# Data
 ### Data Wrangling
 1.
 All relevant R code to make the graph fully reproducible and the process in which you wrangled the data and plotted it fully comprehensible. This does not have to in one "chunk" but can be woven into your brief where it helps the reader trace what you did and why you did it.
@@ -23,9 +32,16 @@ All relevant R code to make the graph fully reproducible and the process in whic
 2.
 Description of the DATA you used (either given to you or where you found it, what unique characteristics of the  data, what quantitative and qualitative information is in the data set, etc.)
 
+---
+### Early Visualization
+
+---
+
 ### Audience
 3.
 Description of the AUDIENCE you are aiming for (including more detail than simply saying "a biochemist").
+
+---
 
 ### Chart Description
 4.
@@ -35,6 +51,8 @@ Description of the TYPE of graph (e.g. Bar chart, Sankey Dendogram, etc).
 5.
 Representation Description: What are you trying to show?
 
+
+---
 ### How to read it and what to look for
 6.
 How to read it & what to look for: How should a newbie to this graph approach interpreting it? What are the major 
@@ -43,6 +61,3 @@ highlights of the graph type?
 
 7.
 Presentation: address how you are using annotation,  color, and general composition (e.g. how are things arranged, scale, etc.)
-
-8.
-How I created it: Methods section  (see point 1: all relevant code should be included); additionally, include a bit about the  process. Please include an early draft of your visualization (it might be a completely different), and why you changed it/what you tweaked to get to your final visualization. 

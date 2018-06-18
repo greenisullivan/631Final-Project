@@ -76,7 +76,7 @@ This site has been constructed as an assignment for OHSU&amp;rsquo;s CS 631 Prin
       <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
       
       <guid>/home/</guid>
-      <description>Hey! Welcome to the Kendra&amp;rsquo;s test website. Most content is still default from the cocoa theme.
+      <description>Hello and welcome to my website hosting final posts and slides for OHSU&amp;rsquo;s CS 631: Principles and Practices of Data Visualization. For more information about me, OHSU, or this class, see my about page. The posts section contains 5 briefs on graphs made for this course. Slides for my final presentation can be found here.
 This page is deployed from my git repository here: https://github.com/KChalk/631Final-Project</description>
     </item>
     
@@ -90,15 +90,6 @@ This page is deployed from my git repository here: https://github.com/KChalk/631
  The MIT License (MIT)
 Copyright &amp;copy; 2015 Nishanth Shanmughamnishanth.gerrard@gmail.com
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &amp;ldquo;Software&amp;rdquo;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:</description>
-    </item>
-    
-    <item>
-      <title>Take a Sad Plot And Make It Better 3.0</title>
-      <link>/finalslides/</link>
-      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
-      
-      <guid>/finalslides/</guid>
-      <description>Data Wrangling All relevant R code to make the graph fully reproducible and the process in which you wrangled the data and plotted it fully comprehensible. This does not have to in one “chunk” but can be woven into your brief where it helps the reader trace what you did and why you did it.   Data Description Description of the DATA you used (either given to you or where you found it, what unique characteristics of the data, what quantitative and qualitative information is in the data set, etc.</description>
     </item>
     
   </channel>
