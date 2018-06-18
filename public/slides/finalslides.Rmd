@@ -1,30 +1,25 @@
 ---
 title: "Take a Sad Plot and Make it Better 3.0"
 author: "Kendra Chalkley"
-date: "June 18, 2018"
+date: "June 18, 2018" 
 output: 
   xaringan::moon_reader:
     css: [default, metropolis, metropolis-fonts]
-    nature:
-        highlightStyle: atelier-lakeside-light
-        highlightLines: true
-        countIncrementalSlides: false
 ---
-
 ```{r echo=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE, 
                       fig.width = 10.5, fig.height = 4, 
                       comment = NA, rows.print = 16)
 ```
-
 class: inverse, middle, center 
 
 # Title Slide 
 
 
----
+---  
 # Data
 ### Data Wrangling
+@@@
 1.
 All relevant R code to make the graph fully reproducible and the process in which you wrangled the data and plotted it fully comprehensible. This does not have to in one "chunk" but can be woven into your brief where it helps the reader trace what you did and why you did it.
 
