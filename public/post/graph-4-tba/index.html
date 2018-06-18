@@ -1090,6 +1090,10 @@ div.main .content .markdown pre, div.main .content .markdown pre code {
                     
                         
                     
+                        
+                            <li><a href="/finalslides/">Take a Sad Plot And Make It Better 3.0</a></li>
+                        
+                    
                 </ul>
             </nav>
         </div>
@@ -1108,7 +1112,81 @@ div.main .content .markdown pre, div.main .content .markdown pre code {
             <div class="markdown">
                 
     
-    
+    <pre class="r"><code>covariances &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;subset_covariance.csv&#39;))</code></pre>
+<pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   X1 = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>covlong &lt;- gather(covariances, key=newDimension, value=covariance, -X1)
+
+ggplot(covlong, aes(x=newDimension, y=X1, fill=covariance))+
+  geom_tile()+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))</code></pre>
+<p><img src="/post/2018-06-13-graph-4-tba_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<pre class="r"><code>nfreqs &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;normal_subset_freqs.csv&#39;))</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   subreddit = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>redfreqs &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;reduced_normal_subset_freqs&#39;))</code></pre>
+<pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   X1 = col_integer()
+## )
+## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>correlations &lt;- cor(nfreqs[c(2:66)],redfreqs[c(2:22)])
+
+corlong &lt;- melt(correlations ) %&gt;% 
+   setNames(c(&#39;orig&#39;, &#39;red_dim&#39;, &#39;correlation&#39;))
+
+
+ggplot(corlong, aes(x=orig, y=red_dim, fill=correlation))+
+  geom_tile()+ 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  scale_fill_distiller(palette = &quot;PRGn&quot;)</code></pre>
+<p><img src="/post/2018-06-13-graph-4-tba_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>  #scale_fill_viridis(option=&#39;E&#39;)</code></pre>
+<pre class="r"><code>corlong &lt;- corlong %&gt;% 
+  mutate(dictcat=case_when(
+           orig %in% c(&#39;ifreq&#39;,&#39;wefreq&#39;,&#39;ipronfreq&#39;,&#39;theyfreq&#39;,&#39;youfreq&#39;,&#39;shehefreq&#39;,&#39;pronounfreq&#39;,&#39;ppronfreq&#39;)
+           ~ &#39;pronons&#39;,
+           orig %in% c(&#39;verbfreq&#39;,&#39;auxverbfreq&#39;,&#39;pastfreq&#39;,&#39;presentfreq&#39;,&#39;futurefreq&#39;)
+           ~ &#39;verbs&#39;,
+           orig %in% c(&#39;articlefreq&#39;,&#39;adverbfreq&#39;,&#39;prepsfreq&#39;,&#39;conjfreq&#39;,&#39;negatefreq&#39;,&#39;quantfreq&#39;,&#39;numberfreq&#39;,&#39;swearfreq&#39;,&#39;functfreq&#39;)
+           ~ &#39;otherfunctional&#39;,
+           orig %in% c(&#39;socialfreq&#39;,&#39;familyfreq&#39;,&#39;friendfreq&#39;,&#39;humansfreq&#39;)
+           ~ &#39;people&#39;,
+           orig %in% c(&#39;affectfreq&#39;,&#39;posemofreq&#39;,&#39;negemofreq&#39;,&#39;anxfreq&#39;,&#39;angerfreq&#39;,&#39;sadfreq&#39;)
+           ~ &#39;feelings&#39;,
+           orig %in% c(&#39;cogmechfreq&#39;,&#39;insightfreq&#39;,&#39;causefreq&#39;,&#39;discrepfreq&#39;,&#39;tentatfreq&#39;,&#39;certainfreq&#39;,&#39;inhibfreq&#39;,&#39;inclfreq&#39;,&#39;exclfreq&#39;)
+           ~ &#39;unlabeled&#39;,
+           orig %in% c(&#39;perceptfreq&#39;,&#39;seefreq&#39;,&#39;hearfreq&#39;,&#39;feelfreq&#39;)
+           ~ &#39;sense&#39;,
+           orig %in% c(&#39;biofreq&#39;,&#39;bodyfreq&#39;,&#39;healthfreq&#39;,&#39;sexualfreq&#39;,&#39;ingestfreq&#39;)
+           ~ &#39;bio&#39;,
+           orig %in% c(&#39;relativfreq&#39;,&#39;motionfreq&#39;,&#39;spacefreq&#39;,&#39;timefreq&#39;)
+           ~ &#39;physics&#39;,
+           orig %in% c(&#39;workfreq&#39;,&#39;achievefreq&#39;,&#39;leisurefreq&#39;,&#39;homefreq&#39;,&#39;moneyfreq&#39;,&#39;religfreq&#39;,&#39;deathfreq&#39;)
+           ~ &#39;life&#39;,
+           orig %in% c(&#39;assentfreq&#39;,&#39;nonflfreq&#39;,&#39;fillerfreq&#39;, &#39;absolutistfreq&#39;)
+           ~ &#39;idk&#39;))
+
+
+ggplot(corlong, aes(x=red_dim, y=orig, fill=correlation))+
+  geom_tile()+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  scale_fill_distiller(palette = &quot;PRGn&quot;)+
+  facet_wrap(~dictcat, scales=&#39;free&#39;)</code></pre>
+<p><img src="/post/2018-06-13-graph-4-tba_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>  #scale_fill_viridis(option=&#39;E&#39;) </code></pre>
+
 
             </div>
         </div>

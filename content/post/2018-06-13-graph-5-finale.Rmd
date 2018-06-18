@@ -14,7 +14,6 @@ meta_img: /images/image.jpg
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
-library(ggplot2)
 #library(ggalt)
 library(ggradar)
 library(extrafont)
@@ -24,109 +23,42 @@ library(forcats)
 library(ggridges)
 library(here)
 library(scales)
+library(ggdendro)
+library(treemapify)
+library(ggplot2)
+library(reshape2)
+library(knitr)
 ```
 
 ```{r}
-radar_colour=rep(c("#FF5A5F", "#FFB400", "#007A87",  "#8CE071", "#7B0051", 
-                       "#00D1C1", "#FFAA91", "#B4A76C", "#9CA299", "#565A5C", "#00A04B", "#E54C20"), 100)
+nfreqs <- read_csv(here('static','data','redditProject','normal_subset_freqs.csv'))
 
-clusters <- read_csv(here('static','data','redditProject','centers'))
+redfreqs <- read_csv(here('static','data','redditProject','reduced_normal_subset_freqs'))
 
-clusters <- clusters %>% 
-  mutate_at(vars(starts_with('d')),rescale)
-clusters
+hc <- hclust(dist(nfreqs[-1]), method='average')
 
-dlabels= c('verb, work, i','relative, cogmech, present','social, i, affect','ppron, pronoun, social','1 funct, pronoun, cogmech','5 affect, pos emotion, relative','7 money, cause, present','6 work, money, bio','9 percept, cogmech, negemo ','10 bio, work, cogmech','11 money, cogmech, bio')
+# labels=nfreqs['subreddit']
+cutmatrix <- cutree(hc, k=c(4,8,16,24))
 
-ggradar(clusters[1,], grid.label.size = 5,
-        group.point.size = 3,
-        axis.label.size = 2,
-        axis.labels = dlabels,
-        legend.text.size = 9,
-        group.colours = radar_colour)+
-  ggtitle("point1")+
-  theme(legend.position="bottom") + 
-  theme(text=element_text(family='Lato')) 
+cutmatrix
+clusterings <- melt(cutmatrix, varnames=c('subreddit', 'cluster_num'), value.name = 'cluster')
+
+clusterings['subreddit'] <- nfreqs['subreddit']
+
+clusters <- clusterings %>% 
+  group_by(cluster_num,cluster) %>% 
+  summarise(c=n()) 
 
 
-ggradar(clusters[2,], grid.label.size = 5,
-        group.point.size = 4,
-        axis.label.size = 3,
-        axis.labels = dlabels,
-        legend.text.size = 9,
-        group.colours = radar_colour[2])+
-  ggtitle("point2")+
-  theme(legend.position="bottom") + 
-  theme(text=element_text(family='Lato')) 
+#%>% 
+#  filter(count>5&count <50) %>% 
+#  sample_n(5)
 
-ggradar(clusters[3,],grid.label.size = 5,
-        group.point.size = 4,
-        axis.label.size = 3,
-        axis.labels = dlabels,
-        legend.text.size = 9,
-        group.colours = radar_colour[3])+
-  ggtitle("point3")+
-  theme(legend.position="bottom") + 
-  theme(text=element_text(family='Lato')) 
+scluster <- clusterings %>% 
+  spread(cluster_num, cluster) %>% 
+  rename('c4'='4', 'c8'='8', 'c16'='16','c24'='24')
 
-
-ggradar(clusters[4,], grid.label.size = 5,
-        group.point.size = 4,
-        axis.label.size = 3,
-        axis.labels = dlabels,
-        legend.text.size = 9,
-        group.colours = radar_colour[4])+
-  ggtitle("point4")+
-  theme(legend.position="bottom") + 
-  theme(text=element_text(family='Lato')) 
-
-
-ggradar(clusters[5,], grid.label.size = 5,
-        group.point.size = 4,
-        axis.label.size = 3,
-        axis.labels = dlabels,
-        legend.text.size = 9,
-        group.colours = radar_colour[5])+
-  ggtitle("point5")+
-  theme(legend.position="bottom") + 
-  theme(text=element_text(family='Lato')) 
-
-          
-          
-ggradar(clusters[6,], grid.label.size = 5,
-        group.point.size = 4,
-        axis.label.size = 3,
-        axis.labels = dlabels,
-        legend.text.size = 9, 
-        group.colours = radar_colour[6])+
-  ggtitle("point6")+
-  theme(legend.position="bottom") + 
-  theme(text=element_text(family='Lato')) 
-
-
-ggradar(clusters[7,], grid.label.size = 5,
-        group.point.size = 4,
-        axis.label.size = 3,
-        axis.labels = dlabels,
-        legend.text.size = 9,
-        group.colours = radar_colour[7])+
-  ggtitle("point7")+
-  theme(legend.position="bottom") + 
-  theme(text=element_text(family='Lato')) 
-
-
-radar <- ggradar(clusters, 
-                 font.radar = 'Lato', 
-                 grid.label.size = 0,
-                 group.point.size = 3,
-                 axis.label.size = 3,
-                 axis.labels = dlabels,
-                 legend.text.size = 7)+
-  ggtitle("7 cluster centers in 11 dimensions")+
-  theme(legend.position="bottom") + 
-  theme(text=element_text(family='Lato')) 
-
-radar
-#ggsave("clusterRadar.pdf",plot = radar)
+ggplot(clusters, aes(area = c, fill = cluster, group=cluster_num)) +
+  geom_treemap()
 
 ```

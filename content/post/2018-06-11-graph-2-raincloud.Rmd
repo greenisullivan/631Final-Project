@@ -1,11 +1,11 @@
----
+--- 
 title: 'Graph 2 Raincloud'
 date: 2018-06-11T10:29:07-07:00
-categories: ["R"]
+categories: ["R"] 
 tags: [tags"]
 ---
 
- ```{r setup, include=FALSE}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(ggplot2)

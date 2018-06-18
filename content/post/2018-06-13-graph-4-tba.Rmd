@@ -11,3 +11,91 @@ lobsters_id: ''
 meta_img: /images/image.jpg
 ---
 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse) 
+library(ggplot2)
+#library(ggalt)
+library(ggradar)
+library(extrafont)
+library(ggfortify)
+library(infer)
+library(forcats)
+library(ggridges)
+library(here)
+library(scales)
+library(reshape2)
+
+library(viridis)
+```
+
+
+```{r}
+covariances <- read_csv(here('static','data','redditProject','subset_covariance.csv'))
+covlong <- gather(covariances, key=newDimension, value=covariance, -X1)
+
+ggplot(covlong, aes(x=newDimension, y=X1, fill=covariance))+
+  geom_tile()+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+```
+
+```{r}
+nfreqs <- read_csv(here('static','data','redditProject','normal_subset_freqs.csv'))
+
+redfreqs <- read_csv(here('static','data','redditProject','reduced_normal_subset_freqs'))
+
+correlations <- cor(nfreqs[c(2:66)],redfreqs[c(2:22)])
+
+corlong <- melt(correlations ) %>% 
+   setNames(c('orig', 'red_dim', 'correlation'))
+
+
+ggplot(corlong, aes(x=orig, y=red_dim, fill=correlation))+
+  geom_tile()+ 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  scale_fill_distiller(palette = "PRGn")
+  #scale_fill_viridis(option='E')
+
+```
+
+```{r}
+corlong <- corlong %>% 
+  mutate(dictcat=case_when(
+           orig %in% c('ifreq','wefreq','ipronfreq','theyfreq','youfreq','shehefreq','pronounfreq','ppronfreq')
+           ~ 'pronons',
+           orig %in% c('verbfreq','auxverbfreq','pastfreq','presentfreq','futurefreq')
+           ~ 'verbs',
+           orig %in% c('articlefreq','adverbfreq','prepsfreq','conjfreq','negatefreq','quantfreq','numberfreq','swearfreq','functfreq')
+           ~ 'otherfunctional',
+           orig %in% c('socialfreq','familyfreq','friendfreq','humansfreq')
+           ~ 'people',
+           orig %in% c('affectfreq','posemofreq','negemofreq','anxfreq','angerfreq','sadfreq')
+           ~ 'feelings',
+           orig %in% c('cogmechfreq','insightfreq','causefreq','discrepfreq','tentatfreq','certainfreq','inhibfreq','inclfreq','exclfreq')
+           ~ 'unlabeled',
+           orig %in% c('perceptfreq','seefreq','hearfreq','feelfreq')
+           ~ 'sense',
+           orig %in% c('biofreq','bodyfreq','healthfreq','sexualfreq','ingestfreq')
+           ~ 'bio',
+           orig %in% c('relativfreq','motionfreq','spacefreq','timefreq')
+           ~ 'physics',
+           orig %in% c('workfreq','achievefreq','leisurefreq','homefreq','moneyfreq','religfreq','deathfreq')
+           ~ 'life',
+           orig %in% c('assentfreq','nonflfreq','fillerfreq', 'absolutistfreq')
+           ~ 'idk'))
+
+
+ggplot(corlong, aes(x=red_dim, y=orig, fill=correlation))+
+  geom_tile()+
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  scale_fill_distiller(palette = "PRGn")+
+  facet_wrap(~dictcat, scales='free')
+  #scale_fill_viridis(option='E') 
+
+```
+
+
+
+
