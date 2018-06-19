@@ -1,0 +1,12 @@
+name: ClustersandCors
+title: ClustersandCors
+username:
+account: kchalk
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 363475
+bundleId: 1438293
+url: https://kchalk.shinyapps.io/ClustersandCors/
+when: 1529449066.53977
+asMultiple: FALSE
+asStatic: FALSE
