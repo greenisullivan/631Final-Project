@@ -16,8 +16,8 @@
 <meta property="og:locale" content="nn_NO" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/post/graph-4-tba/" />
-<meta property="og:title" content="Graph 4: TBA " />
-<meta property="twitter:title" content="Graph 4: TBA ">
+<meta property="og:title" content="Graph 4: PCA Correlations " />
+<meta property="twitter:title" content="Graph 4: PCA Correlations ">
 
     <meta property="og:image" content="//images/image.jpg">
     <meta property="twitter:card" content="summary">
@@ -29,7 +29,7 @@
 <title>
 
 
-     CS631: Take a sad plot and make it better - Graph 4: TBA  
+     CS631: Take a sad plot and make it better - Graph 4: PCA Correlations  
 
 </title>
 <link rel="canonical" href="/post/graph-4-tba/">
@@ -1101,7 +1101,7 @@ div.main .content .markdown pre, div.main .content .markdown pre code {
         <div class="content">
             <div class="page-heading">
 
-    Graph 4: TBA 
+    Graph 4: PCA Correlations 
 
 </div>
 
@@ -1137,7 +1137,10 @@ ggplot(covlong, aes(x=newDimension, y=X1, fill=covariance))+
 ##   X1 = col_integer()
 ## )
 ## See spec(...) for full column specifications.</code></pre>
-<pre class="r"><code>correlations &lt;- cor(nfreqs[c(2:66)],redfreqs[c(2:22)])
+<pre class="r"><code>od_num=65
+pc_num=21
+
+correlations &lt;- cor(nfreqs[c(2:(od_num+1))],redfreqs[c(2:(pc_num+1))])
 
 corlong &lt;- melt(correlations ) %&gt;% 
    setNames(c(&#39;orig&#39;, &#39;red_dim&#39;, &#39;correlation&#39;))
@@ -1181,7 +1184,55 @@ ggplot(corlong, aes(x=red_dim, y=orig, fill=correlation))+
   scale_fill_distiller(palette = &quot;PRGn&quot;)+
   facet_wrap(~dictcat, scales=&#39;free&#39;)</code></pre>
 <p><img src="/post/2018-06-13-graph-4-tba_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<pre class="r"><code>  #scale_fill_viridis(option=&#39;E&#39;) </code></pre>
+<pre class="r"><code>  #scale_fill_viridis(option=&#39;E&#39;) 
+
+workingdf &lt;- corlong %&gt;% 
+  filter(red_dim==&#39;d1&#39;) %&gt;% 
+  mutate(poscor=abs(correlation))
+
+
+ggplot(workingdf, aes(x=fct_reorder(orig,poscor,.desc = TRUE), y=poscor, fill=dictcat))+
+  geom_col()+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
+<p><img src="/post/2018-06-13-graph-4-tba_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<pre class="r"><code>workingdf &lt;- corlong %&gt;% 
+      filter(red_dim==&#39;d1&#39;) %&gt;% 
+      mutate(poscor=abs(correlation), sign=case_when(correlation&gt;=0~&#39;pos&#39;, correlation&lt;0~&#39;neg&#39;))</code></pre>
+<pre class="r"><code>pcs &lt;- distinct(corlong[&#39;red_dim&#39;])
+
+ui &lt;- fluidPage(
+  titlePanel(&quot;PCA Correlations&quot;),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput(inputId = &quot;pc&quot;,
+                  label = &quot;Principle Component/New Dimemsion&quot;,
+                  choices=pcs,
+                  selected=&#39;d1&#39;)
+      ),
+    # Main panel for displaying outputs ----
+    mainPanel(
+
+      # Output: Histogram ----
+      plotOutput(outputId = &quot;corPlot&quot;)
+    )
+  )
+)
+
+server &lt;- function(input, output) {
+  output$corPlot &lt;- renderPlot({
+    workingdf &lt;- corlong %&gt;% 
+      filter(red_dim==input$pc) %&gt;% 
+      mutate(poscor=abs(correlation), sign=case_when(correlation&gt;=0~&#39;pos&#39;, correlation&lt;0~&#39;neg&#39;))
+    
+    ggplot(workingdf, aes(x=fct_reorder(orig,poscor,.desc = TRUE), y=poscor, color=sign))+
+      geom_col()+
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  })
+
+}
+
+shinyApp(ui = ui, server = server)</code></pre>
+<div style="width: 100% ; height: 400px ; text-align: center; box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-sizing: border-box;" class="muted well">Shiny applications not supported in static R Markdown documents</div>
 
 
             </div>

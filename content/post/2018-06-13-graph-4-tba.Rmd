@@ -1,5 +1,5 @@
 ---
-title: 'Graph 4: TBA '
+title: 'Graph 4: PCA Correlations '
 author: ''
 date: '2018-06-13'
 slug: graph-4-tba
@@ -28,6 +28,7 @@ library(scales)
 library(reshape2)
 
 library(viridis)
+library(shiny)
 ```
 
 
@@ -43,10 +44,12 @@ ggplot(covlong, aes(x=newDimension, y=X1, fill=covariance))+
 
 ```{r}
 nfreqs <- read_csv(here('static','data','redditProject','normal_subset_freqs.csv'))
-
 redfreqs <- read_csv(here('static','data','redditProject','reduced_normal_subset_freqs'))
 
-correlations <- cor(nfreqs[c(2:66)],redfreqs[c(2:22)])
+od_num=65
+pc_num=21
+
+correlations <- cor(nfreqs[c(2:(od_num+1))],redfreqs[c(2:(pc_num+1))])
 
 corlong <- melt(correlations ) %>% 
    setNames(c('orig', 'red_dim', 'correlation'))
@@ -59,6 +62,8 @@ ggplot(corlong, aes(x=red_dim, y=orig, fill=correlation))+
   #scale_fill_viridis(option='E')
 
 ```
+
+
 
 ```{r}
 corlong <- corlong %>% 
@@ -94,8 +99,59 @@ ggplot(corlong, aes(x=red_dim, y=orig, fill=correlation))+
   facet_wrap(~dictcat, scales='free')
   #scale_fill_viridis(option='E') 
 
+workingdf <- corlong %>% 
+  filter(red_dim=='d1') %>% 
+  mutate(poscor=abs(correlation))
+
+
+ggplot(workingdf, aes(x=fct_reorder(orig,poscor,.desc = TRUE), y=poscor, fill=dictcat))+
+  geom_col()+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+workingdf <- corlong %>% 
+      filter(red_dim=='d1') %>% 
+      mutate(poscor=abs(correlation), sign=case_when(correlation>=0~'pos', correlation<0~'neg'))
+    
+
 ```
 
 
+```{r}
+
+pcs <- distinct(corlong['red_dim'])
+
+ui <- fluidPage(
+  titlePanel("PCA Correlations"),
+  sidebarLayout(
+    sidebarPanel(
+      selectInput(inputId = "pc",
+                  label = "Principle Component/New Dimemsion",
+                  choices=pcs,
+                  selected='d1')
+      ),
+    # Main panel for displaying outputs ----
+    mainPanel(
+
+      # Output: Histogram ----
+      plotOutput(outputId = "corPlot")
+    )
+  )
+)
+
+server <- function(input, output) {
+  output$corPlot <- renderPlot({
+    workingdf <- corlong %>% 
+      filter(red_dim==input$pc) %>% 
+      mutate(poscor=abs(correlation), sign=case_when(correlation>=0~'pos', correlation<0~'neg'))
+    
+    ggplot(workingdf, aes(x=fct_reorder(orig,poscor,.desc = TRUE), y=poscor, color=sign))+
+      geom_col()+
+      theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  })
+
+}
+
+shinyApp(ui = ui, server = server)
+```
 
 

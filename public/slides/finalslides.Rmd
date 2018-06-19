@@ -1,40 +1,150 @@
 ---
 title: "Take a Sad Plot and Make it Better 3.0"
+subtitle: "CS631 Final Project Slides"
 author: "Kendra Chalkley"
 date: "June 18, 2018" 
 output: 
   xaringan::moon_reader:
     css: [default, metropolis, metropolis-fonts]
+    nature:
+        highlightStyle: atelier-lakeside-light
+        highlightLines: true
+        countIncrementalSlides: false
 ---
-```{r echo=FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE, 
-                      fig.width = 10.5, fig.height = 4, 
-                      comment = NA, rows.print = 16)
-```
-class: inverse, middle, center 
 
 # Title Slide 
+why is nothing
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(ggplot2)
+library(here) 
+library(ggridges)
+```
+ 
+---
 
 ---  
 # Data
-### Data Wrangling
-@@@
-1.
-All relevant R code to make the graph fully reproducible and the process in which you wrangled the data and plotted it fully comprehensible. This does not have to in one "chunk" but can be woven into your brief where it helps the reader trace what you did and why you did it.
 
-### Data Description
-2.
-Description of the DATA you used (either given to you or where you found it, what unique characteristics of the  data, what quantitative and qualitative information is in the data set, etc.)
+.pull-left[
+
+* Source: Reddit
+  + a website www.reddit.com
+* `subreddit` /r/ 
+  + <=20 character, case sensitive forum name
+* `posts` 
+  + a count of posts in each subreddit
+  + only `self` posts were included in this dataset
+  + posts < 100 words in length were filtered out of this dataset
+* `wordcount`
+  + a sum of the total number of words in all posts in that subreddit
+]
+--
+.pull-right[
+* `dictionary` 
+  + the name of one of 65 dictionaries
+  + 64 from an outdated version of Linguistic Inquiry and Word Count texual analysis software 
+  + plus an 'absolutist' dictionary curated by by AlMosaiwi and Johnstone(2018) as described in [In an Absolute State](http://journals.sagepub.com/doi/abs/10.1177/2167702617747074)  
+* `freq` the frequency of words from each dictionary $$\frac{number\ of\ words\ matching\ dictionary}{number\ of\ total\ words}$$
+]
 
 ---
-### Early Visualization
+# Data
+```{r, message=FALSE}
+# I regret this naming decision
+alldicts <- read_csv(here('631FinalProject', 'static','data','redditProject','subset_medoutput.csv'))  
+
+#filter out mistakes of data collection process and typecast variables
+alldicts <- alldicts %>% 
+  filter(subreddit!='subreddit' & subreddit!='TypeError') %>%  
+  mutate_at(vars(ends_with('freq')), as.numeric)
+
+#Tidy-ify 
+alldictslong <- alldicts %>% 
+  gather(key='dictionary',value='freq',-subreddit,-'count(1)',-'sum(wordcount)') %>% 
+  select(subreddit,dictionary,freq)%>%   
+  mutate_at('dictionary', as.factor) %>% 
+  group_by(subreddit) 
+
+glimpse(alldictslong)
+```
+
+
+---
+# Data
+```{r include=FALSE}
+alldicts <- alldicts %>% 
+  arrange(absolutistfreq)
+```
+
+```{r}
+glimpse(alldicts)
+```
+
+
+---
+# Early Visualization
+```{r echo=FALSE, message=FALSE, fig.width=12, fig.height=8}
+subabs <- alldictslong %>% 
+  mutate(absolutist=case_when(
+           dictionary == 'absolutistfreq' ~ freq,
+           dictionary != 'absolutistfreq' ~ 0)) %>% 
+  group_by(subreddit) %>% 
+  summarize(absolutist=max(absolutist))
+
+alldictslong <- inner_join(alldictslong,subabs,by="subreddit")
+
+alldictslong <- alldictslong %>% 
+  mutate(dictcat=case_when(
+           dictionary %in% c('ifreq','wefreq','ipronfreq','theyfreq','youfreq','shehefreq','pronounfreq','ppronfreq')
+           ~ 'pronons',
+           dictionary %in% c('verbfreq','auxverbfreq','pastfreq','presentfreq','futurefreq')
+           ~ 'verbs',
+           dictionary %in% c('articlefreq','adverbfreq','prepsfreq','conjfreq','negatefreq','quantfreq','numberfreq','swearfreq','functfreq')
+           ~ 'otherfunctional',
+           dictionary %in% c('socialfreq','familyfreq','friendfreq','humansfreq')
+           ~ 'people',
+           dictionary %in% c('affectfreq','posemofreq','negemofreq','anxfreq','angerfreq','sadfreq')
+           ~ 'feelings',
+           dictionary %in% c('cogmechfreq','insightfreq','causefreq','discrepfreq','tentatfreq','certainfreq','inhibfreq','inclfreq','exclfreq')
+           ~ 'unlabeled',
+           dictionary %in% c('perceptfreq','seefreq','hearfreq','feelfreq')
+           ~ 'sense',
+           dictionary %in% c('biofreq','bodyfreq','healthfreq','sexualfreq','ingestfreq')
+           ~ 'bio',
+           dictionary %in% c('relativfreq','motionfreq','spacefreq','timefreq')
+           ~ 'physics',
+           dictionary %in% c('workfreq','achievefreq','leisurefreq','homefreq','moneyfreq','religfreq','deathfreq')
+           ~ 'life',
+           dictionary %in% c('assentfreq','nonflfreq','fillerfreq', 'absolutistfreq')
+           ~ 'idk'))
+
+rainplot <- alldictslong %>%   
+  filter(dictionary!='functfreq') %>% 
+  ggplot(aes(x=freq,y=dictionary))+
+    geom_density_ridges(jittered_points=TRUE, 
+      position="raincloud", scale=1, alpha=.5,aes(point_color=absolutist))+
+  facet_wrap(~dictcat,scales='free',ncol=3)
+
+rainplot
+```
 
 ---
 
 ### Audience
-3.
-Description of the AUDIENCE you are aiming for (including more detail than simply saying "a biochemist").
+
+The end user intended audience is rather general, but can be divided into a few likely subgroups: 
+
+1. Linguists interested in this method of textual analysis and the language of internet forums
+1. Computer sciencists interested in potential uses of distributed computing
+1. Social scientists studying mood and anxiety disorders such as major depression or generalized anxiety disorder
+
+```{r include=FALSE}
+#However, with this graph in particular, the most important thing is a quick glance at the data, and one should probably use actual statistics before deciding to subset the data as I'm about to suggest. Really, this graph is just part of an exploratory data analysis to call attention to the need to throw out some of our data points, and the primary audience is the graph maker. 
+```
+
 
 ---
 
