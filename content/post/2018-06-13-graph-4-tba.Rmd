@@ -119,6 +119,7 @@ workingdf <- corlong %>%
 ```{r}
 
 pcs <- distinct(corlong['red_dim'])
+clusters <- read_csv(here('static','data','redditProject','centers')) 
 
 ui <- fluidPage(
   titlePanel("PCA Correlations"),
@@ -129,6 +130,11 @@ ui <- fluidPage(
                   choices=pcs,
                   selected='d1')
       ),
+      selectInput(inputId = "cluster",
+                  label = "Cluster",
+                  choices=pcs,
+                  selected='d1')
+      ),
     # Main panel for displaying outputs ----
     mainPanel(
 
@@ -136,7 +142,7 @@ ui <- fluidPage(
       plotOutput(outputId = "corPlot")
     )
   )
-)
+
 
 server <- function(input, output) {
   output$corPlot <- renderPlot({
@@ -147,6 +153,7 @@ server <- function(input, output) {
     ggplot(workingdf, aes(x=fct_reorder(orig,poscor,.desc = TRUE), y=poscor, color=sign))+
       geom_col()+
       theme(axis.text.x = element_text(angle = 90, hjust = 1))
+    
   })
 
 }
