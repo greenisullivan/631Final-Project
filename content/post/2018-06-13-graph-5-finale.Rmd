@@ -9,6 +9,7 @@ description: Desc
 hacker_news_id: ''
 lobsters_id: ''
 meta_img: /images/image.jpg
+runtime: shiny
 ---
 
 ```{r setup, include=FALSE}
