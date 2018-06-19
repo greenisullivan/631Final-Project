@@ -102,7 +102,46 @@ ggplot(workingdf, aes(x=fct_reorder(orig,poscor,.desc = TRUE), y=poscor, fill=di
 <p><img src="/post/2018-06-13-graph-4-tba_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
 <pre class="r"><code>workingdf &lt;- corlong %&gt;% 
       filter(red_dim==&#39;d1&#39;) %&gt;% 
-      mutate(poscor=abs(correlation), sign=case_when(correlation&gt;=0~&#39;pos&#39;, correlation&lt;0~&#39;neg&#39;))</code></pre>
+      mutate(poscor=abs(correlation), sign=case_when(correlation&gt;=0~&#39;pos&#39;, correlation&lt;0~&#39;neg&#39;))
+
+
+radar_colour=rep(c(&quot;#FF5A5F&quot;, &quot;#FFB400&quot;, &quot;#007A87&quot;,  &quot;#8CE071&quot;, &quot;#7B0051&quot;, 
+                       &quot;#00D1C1&quot;, &quot;#FFAA91&quot;, &quot;#B4A76C&quot;, &quot;#9CA299&quot;, &quot;#565A5C&quot;, &quot;#00A04B&quot;, &quot;#E54C20&quot;), 100)
+
+clusters &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;centers&#39;)) </code></pre>
+<pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   X1 = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>clusters &lt;- clusters %&gt;%  
+  mutate_at(vars(starts_with(&#39;d&#39;)),rescale)
+clusters</code></pre>
+<pre><code>## # A tibble: 7 x 22
+##   X1           d1    d2    d3    d4     d5    d6     d7     d8    d9   d10
+##   &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+## 1 [&#39;asktr… 0.0218 0.605 0     1     0.211  0.675 0.455  0.0670 0.978 0.931
+## 2 [&#39;jobs&#39;… 0.248  0     0.377 0.450 0      0.560 0.188  0.906  0.477 0    
+## 3 [&#39;brasi… 1      1     0.106 0.530 0.631  0     0      1      1     0.161
+## 4 [&#39;dirty… 0      0.831 0.470 0.215 0.459  0.424 0.109  0.927  0.452 0.111
+## 5 [&#39;gamin… 0.263  0.418 1     0.694 0.0177 0.640 0.0844 0.860  0.521 0.142
+## 6 [&#39;nba&#39;,… 0.579  0.451 0.492 0.541 0.129  0.674 0.230  0.644  0     0.474
+## 7 [&#39;playr… 0.370  0.213 0.968 0     1      1     1      0      0.295 1    
+## # ... with 11 more variables: d11 &lt;dbl&gt;, d12 &lt;dbl&gt;, d13 &lt;dbl&gt;, d14 &lt;dbl&gt;,
+## #   d15 &lt;dbl&gt;, d16 &lt;dbl&gt;, d17 &lt;dbl&gt;, d18 &lt;dbl&gt;, d19 &lt;dbl&gt;, d20 &lt;dbl&gt;,
+## #   d21 &lt;dbl&gt;</code></pre>
+<pre class="r"><code>#dlabels= c(&#39;verb, work, i&#39;,&#39;relative, cogmech, present&#39;,&#39;social, i, affect&#39;,&#39;ppron, pronoun, social&#39;,&#39;1 funct, pronoun, cogmech&#39;,&#39;5 affect, pos emotion, relative&#39;,&#39;7 money, cause, present&#39;,&#39;6 work, money, bio&#39;,&#39;9 percept, cogmech, negemo &#39;,&#39;10 bio, work, cogmech&#39;,&#39;11 money, cogmech, bio&#39;)
+
+ggradar(clusters[1,], grid.label.size = 5,
+        group.point.size = 3,
+        axis.label.size = 4,
+        #axis.labels = dlabels,
+        legend.text.size = 11,
+        group.colours = radar_colour)+
+  theme(legend.position=&quot;bottom&quot;) </code></pre>
+<p><img src="/post/2018-06-13-graph-4-tba_files/figure-html/unnamed-chunk-3-3.png" width="672" /></p>
 <pre class="r"><code>pcs &lt;- distinct(corlong[&#39;red_dim&#39;])
 clusters &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;centers&#39;)) </code></pre>
 <pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
@@ -112,7 +151,9 @@ clusters &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&
 ##   X1 = col_character()
 ## )</code></pre>
 <pre><code>## See spec(...) for full column specifications.</code></pre>
-<pre class="r"><code>ui &lt;- fluidPage(
+<pre class="r"><code>cs &lt;- distinct(clusters[&#39;X1&#39;])
+
+ui &lt;- fluidPage(
   titlePanel(&quot;PCA Correlations&quot;),
   sidebarLayout(
     sidebarPanel(
@@ -121,18 +162,30 @@ clusters &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&
                   choices=pcs,
                   selected=&#39;d1&#39;)
       ),
-      selectInput(inputId = &quot;cluster&quot;,
+      selectInput(inputId = &quot;clusterN&quot;,
                   label = &quot;Cluster&quot;,
-                  choices=pcs,
-                  selected=&#39;d1&#39;)
+                  choices = list(&quot;Choice 1&quot; = 1, 
+                                 &quot;Choice 2&quot; = 2, 
+                                 &quot;Choice 3&quot; = 3,
+                                 &quot;Choice 4&quot; = 4, 
+                                 &quot;Choice 5&quot; = 5, 
+                                 &quot;Choice 6&quot; = 6,
+                                 &quot;Choice 7&quot; = 7#, 
+                                 #&quot;Choice 8&quot; = 8, 
+                                 #&quot;Choice 9&quot; = 9,
+                                 #&quot;Choice 10&quot; = 10, 
+                                 #&quot;Choice 11&quot; = 11
+                                 ),
+                  selected=1)
       ),
     # Main panel for displaying outputs ----
     mainPanel(
 
       # Output: Histogram ----
-      plotOutput(outputId = &quot;corPlot&quot;)
+      plotOutput(outputId = &quot;corPlot&quot;),
+      plotOutput(outputId = &quot;clusterPlot&quot;)
     )
-  )
+  ) 
 
 
 server &lt;- function(input, output) {
@@ -145,6 +198,25 @@ server &lt;- function(input, output) {
       geom_col()+
       theme(axis.text.x = element_text(angle = 90, hjust = 1))
     
+  })
+
+  output$clusterPlot &lt;- renderPlot({
+    radar_colour=c(&quot;#FF5A5F&quot;, &quot;#FFB400&quot;, &quot;#007A87&quot;,  &quot;#8CE071&quot;, &quot;#7B0051&quot;, &quot;#00D1C1&quot;, &quot;#FFAA91&quot;, &quot;#B4A76C&quot;, &quot;#9CA299&quot;, &quot;#565A5C&quot;, &quot;#00A04B&quot;, &quot;#E54C20&quot;)
+  
+    clusters &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;centers&#39;)) 
+    
+    clusters &lt;- clusters %&gt;%  
+      mutate_at(vars(starts_with(&#39;d&#39;)),rescale)
+   
+    clusterN=as.numeric(input$clusterN)
+    print(clusterN)
+    ggradar(clusters[clusterN,], grid.label.size = 5,
+        group.point.size = 3,
+        axis.label.size = 4,
+        #axis.labels = dlabels,
+        legend.text.size = 11,
+        group.colours = radar_colour[clusterN])+
+      theme(legend.position=&quot;bottom&quot;) 
   })
 
 }
