@@ -104,13 +104,25 @@ ggplot(workingdf, aes(x=fct_reorder(orig,poscor,.desc = TRUE), y=poscor, fill=di
       filter(red_dim==&#39;d1&#39;) %&gt;% 
       mutate(poscor=abs(correlation), sign=case_when(correlation&gt;=0~&#39;pos&#39;, correlation&lt;0~&#39;neg&#39;))</code></pre>
 <pre class="r"><code>pcs &lt;- distinct(corlong[&#39;red_dim&#39;])
-
-ui &lt;- fluidPage(
+clusters &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;centers&#39;)) </code></pre>
+<pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   X1 = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>ui &lt;- fluidPage(
   titlePanel(&quot;PCA Correlations&quot;),
   sidebarLayout(
     sidebarPanel(
       selectInput(inputId = &quot;pc&quot;,
                   label = &quot;Principle Component/New Dimemsion&quot;,
+                  choices=pcs,
+                  selected=&#39;d1&#39;)
+      ),
+      selectInput(inputId = &quot;cluster&quot;,
+                  label = &quot;Cluster&quot;,
                   choices=pcs,
                   selected=&#39;d1&#39;)
       ),
@@ -121,7 +133,7 @@ ui &lt;- fluidPage(
       plotOutput(outputId = &quot;corPlot&quot;)
     )
   )
-)
+
 
 server &lt;- function(input, output) {
   output$corPlot &lt;- renderPlot({
@@ -132,6 +144,7 @@ server &lt;- function(input, output) {
     ggplot(workingdf, aes(x=fct_reorder(orig,poscor,.desc = TRUE), y=poscor, color=sign))+
       geom_col()+
       theme(axis.text.x = element_text(angle = 90, hjust = 1))
+    
   })
 
 }
