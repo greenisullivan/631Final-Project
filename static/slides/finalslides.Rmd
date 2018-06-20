@@ -18,6 +18,7 @@ library(tidyverse)
 library(ggplot2)
 library(here) 
 library(ggridges)
+library(reshape2)
 
 #Uncomment for Serve Site
 #alldicts <- read_csv(here('631FinalProject', 'static','data','redditProject','subset_medoutput.csv'))  
@@ -90,7 +91,7 @@ alldicts %>%
 
 ## K-means Clustering
 * Identifies groups in the data 
-* I tried several values of K and am still undecided, but for now, visualizations are given for 11 clusters 
+* I tried several values of K and am still undecided, but for now, visualizations are given for 15 clusters 
 ---
 # Early Visualization
 ```{r echo=FALSE, message=FALSE, fig.width=12, fig.height=8}
