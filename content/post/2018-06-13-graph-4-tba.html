@@ -93,13 +93,6 @@ ggplot(corlong, aes(x=red_dim, y=orig, fill=correlation))+
 
 workingdf &lt;- corlong %&gt;% 
   filter(red_dim==&#39;d1&#39;) %&gt;% 
-  mutate(poscor=abs(correlation))
-
-
-ggplot(workingdf, aes(x=fct_reorder(orig,poscor,.desc = TRUE), y=poscor, fill=dictcat))+
-  geom_col()+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))</code></pre>
-<p><img src="/post/2018-06-13-graph-4-tba_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
-<pre class="r"><code>workingdf &lt;- corlong %&gt;% 
-      filter(red_dim==&#39;d1&#39;) %&gt;% 
-      mutate(poscor=abs(correlation), sign=case_when(correlation&gt;=0~&#39;pos&#39;, correlation&lt;0~&#39;neg&#39;))</code></pre>
+  mutate(poscor=abs(correlation))</code></pre>
+<p>ggplot(workingdf, aes(x=fct_reorder(orig,poscor,.desc = TRUE), y=poscor, fill=dictcat))+ geom_col()+ theme(axis.text.x = element_text(angle = 60, hjust = 1))</p>
+<p>workingdf &lt;- corlong %&gt;% filter(red_dim==‘d1’) %&gt;% mutate(poscor=abs(correlation), sign=case_when(correlation&gt;=0~‘pos’, correlation&lt;0~‘neg’))</p>

@@ -25,7 +25,7 @@ library(ggridges)
 alldicts <- read_csv(here('static','data','redditProject','subset_medoutput.csv'))  
 nfreqs <- read_csv(here('static','data','redditProject','normal_subset_freqs.csv'))
 redfreqs <- read_csv(here('static','data','redditProject','reduced_normal_subset_freqs'))
-clusters <- read_csv(here('static','data','redditProject','centers'))
+clusters <- read_csv(here('static','data','redditProject','subsetcenters.csv'))
 
 ```
 
@@ -130,92 +130,8 @@ ggplot(corlong, aes(x=red_dim, y=orig, fill=correlation))+
 ---
 # Show us the chart already... 
 
-Chart available here: https://kchalk.shinyapps.io/ClustersandCors/
-
-(Or it will be... someday)
-
----
-
-# An example for grading and stuff: 
-```{r}
-
-od_num=65
-pc_num=21
-
-corlong <- corlong %>% 
-  mutate(dictcat=case_when(
-    orig %in% c('ifreq','wefreq','ipronfreq','theyfreq','youfreq','shehefreq','pronounfreq','ppronfreq')
-    ~ 'pronons',
-    orig %in% c('verbfreq','auxverbfreq','pastfreq','presentfreq','futurefreq')
-    ~ 'verbs',
-    orig %in% c('articlefreq','adverbfreq','prepsfreq','conjfreq','negatefreq','quantfreq','numberfreq','swearfreq','functfreq')
-    ~ 'otherfunctional',
-    orig %in% c('socialfreq','familyfreq','friendfreq','humansfreq')
-    ~ 'people',
-    orig %in% c('affectfreq','posemofreq','negemofreq','anxfreq','angerfreq','sadfreq')
-    ~ 'feelings',
-    orig %in% c('cogmechfreq','insightfreq','causefreq','discrepfreq','tentatfreq','certainfreq','inhibfreq','inclfreq','exclfreq')
-    ~ 'unlabeled',
-    orig %in% c('perceptfreq','seefreq','hearfreq','feelfreq')
-    ~ 'sense',
-    orig %in% c('biofreq','bodyfreq','healthfreq','sexualfreq','ingestfreq')
-    ~ 'bio',
-    orig %in% c('relativfreq','motionfreq','spacefreq','timefreq')
-    ~ 'physics',
-    orig %in% c('workfreq','achievefreq','leisurefreq','homefreq','moneyfreq','religfreq','deathfreq')
-    ~ 'life',
-    orig %in% c('assentfreq','nonflfreq','fillerfreq', 'absolutistfreq')
-    ~ 'idk'))
-```
-
----
-# An example for grading and stuff (continued): 
-```{r}
-pcs <- distinct(corlong['red_dim'])
-cs <- distinct(clusters['X1'])
-
-pc='d2'
-clusterN=1 
-
-radar_color=c("#FF5A5F", "#FFB400", "#007A87",  "#8CE071", "#7B0051", "#00D1C1", "#FFAA91", "#B4A76C", "#9CA299", "#565A5C", "#00A04B", "#E54C20")
-
-workingdf <- corlong %>%  
-  filter(red_dim==pc) %>% 
-  mutate(poscor=abs(correlation), sign=case_when(correlation>=0~'pos', correlation<0~'neg'))
-    
-corplot <- ggplot(workingdf, aes(x=fct_reorder(orig,correlation,.desc = TRUE), y=poscor, color=sign, fill=dictcat))+
-  geom_col()+
-  theme_minimal()+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
-  scale_fill_manual(values=radar_color)+
-  scale_color_manual(values=c('black','white'))
-    
-clusters <- clusters %>%  
-  mutate_at(vars(starts_with('d')),rescale)
-```
----
-# An example for grading and stuff (continued): 
-
-```{r}
-clusterplot<- ggradar(clusters[clusterN,], grid.label.size = 5,
-        group.point.size = 3,
-        axis.label.size = 4,
-        legend.text.size = 11,
-        group.colours = radar_colour[clusterN])+
-  theme(legend.position="bottom") 
-```
-
----
-# Correlation plot for PCA 2
-```{r fig.width=12, fig.height=8, echo=FALSE}
-corplot
-```
----
-
-# Radar plot for Cluster 1
-```{r fig.width=12, fig.height=8,echo=FALSE}
-clusterplot
-```
-
-
-
+The chart is hosted on (shinyapps.io)[https://kchalk.shinyapps.io/631Shiny/] 
+<iframe id="example1" src="https://kchalk.shinyapps.io/631Shiny/"
+style="border: non; width: 100%; height: 500px"
+frameborder="0">
+</iframe>

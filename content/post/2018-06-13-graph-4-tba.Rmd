@@ -103,15 +103,14 @@ workingdf <- corlong %>%
   filter(red_dim=='d1') %>% 
   mutate(poscor=abs(correlation))
 
-
+```
 ggplot(workingdf, aes(x=fct_reorder(orig,poscor,.desc = TRUE), y=poscor, fill=dictcat))+
   geom_col()+
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
 
 workingdf <- corlong %>% 
       filter(red_dim=='d1') %>% 
       mutate(poscor=abs(correlation), sign=case_when(correlation>=0~'pos', correlation<0~'neg'))
 
-```
 
 
