@@ -112,24 +112,24 @@ ggplot(corlong, aes(x=red_dim, y=orig, fill=correlation))+
 
 # Audience
 
-1. Myself
+1. Myself 
 1. Linguists
 1. Computer scientists
 1. Social scientists
 1. Others interested in textual analysis, machine learning, and the visualization thereof
 
 ---
-
+ 
 # Chart Description
 * Simple Bar Chart (best for showing relative magnitude)
   + Original features (dictionary frequency) on x axis
   + Magnitude of correlation with principal component on y axis
   + Sorted by correlation between PC and dictionary
-* Accompanied by radar chart showing how the components were used to cluster subreddits
+* Accompanied by radar chart showing how the components were used to cluster subreddits 
 
 ---
-# Show us the chart already... 
-
+# Show us the chart already...   
+ 
 The chart is hosted on (shinyapps.io)[https://kchalk.shinyapps.io/631Shiny/] 
 <iframe id="example1" src="https://kchalk.shinyapps.io/631Shiny/"
 style="border: non; width: 100%; height: 500px"
