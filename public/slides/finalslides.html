@@ -11,7 +11,7 @@
   </head>
   <body>
     <textarea id="source">
-class: 
+class: center, middle, inverse, title-slide
 
 # Take a Sad Plot and Make it Better 3.0
 ## CS631 Final Project Slides
@@ -21,18 +21,13 @@ class:
 ---
 
 
-# Title Slide 
-why is nothing
 
 
- 
----
 
 ---  
 # Data
 
 .pull-left[
-
 * Source: Reddit
   + a website www.reddit.com
 * `subreddit` /r/ 
@@ -57,12 +52,8 @@ why is nothing
 # Data
 
 ```r
-# I regret this naming decision
-alldicts &lt;- read_csv(here('631FinalProject', 'static','data','redditProject','subset_medoutput.csv'))  
-
 #filter out mistakes of data collection process and typecast variables
 alldicts &lt;- alldicts %&gt;% 
-  filter(subreddit!='subreddit' &amp; subreddit!='TypeError') %&gt;%  
   mutate_at(vars(ends_with('freq')), as.numeric)
 
 #Tidy-ify 
@@ -70,17 +61,18 @@ alldictslong &lt;- alldicts %&gt;%
   gather(key='dictionary',value='freq',-subreddit,-'count(1)',-'sum(wordcount)') %&gt;% 
   select(subreddit,dictionary,freq)%&gt;%   
   mutate_at('dictionary', as.factor) %&gt;% 
-  group_by(subreddit) 
-
+  group_by(subreddit) %&gt;% 
+  arrange(desc(freq)) 
+ 
 glimpse(alldictslong)
 ```
 
 ```
-## Observations: 41,990
+## Observations: 42,055
 ## Variables: 3
-## $ subreddit  &lt;chr&gt; "dirtypenpals", "autotldr", "buildapc", "SteamTradi...
-## $ dictionary &lt;fct&gt; ingestfreq, ingestfreq, ingestfreq, ingestfreq, ing...
-## $ freq       &lt;dbl&gt; 0.003390, 0.002380, 0.000871, 0.000000, 0.003190, 0...
+## $ subreddit  &lt;chr&gt; "UnsentLetters", "BreakUps", "relationship_advice",...
+## $ dictionary &lt;fct&gt; functfreq, functfreq, functfreq, functfreq, functfr...
+## $ freq       &lt;dbl&gt; 0.664, 0.653, 0.648, 0.648, 0.645, 0.641, 0.641, 0....
 ```
 
 
@@ -88,13 +80,14 @@ glimpse(alldictslong)
 # Data
 
 
-
 ```r
-glimpse(alldicts)
+alldicts %&gt;% 
+  arrange(absolutistfreq) %&gt;% 
+  glimpse()
 ```
 
 ```
-## Observations: 646
+## Observations: 647
 ## Variables: 68
 ## $ subreddit        &lt;chr&gt; "Womad", "brasil", "podemos", "boardgamerecom...
 ## $ `count(1)`       &lt;int&gt; 222, 435, 271, 317, 913, 403, 213, 582, 5810,...
@@ -165,45 +158,125 @@ glimpse(alldicts)
 ## $ religfreq        &lt;dbl&gt; 2.76e-05, 2.57e-03, 5.31e-03, 1.63e-03, 1.73e...
 ## $ moneyfreq        &lt;dbl&gt; 6.91e-05, 2.68e-03, 6.36e-03, 1.96e-03, 8.52e...
 ```
+---
+# Machine Learning Techniques
+## Principle Component Analysis
+* Method of reducing dimensionality
+* Effective when features are correlated with each other
+* In this case, can explain 90% of variation in dataset in 21 dimensions, or 80% in 11 
 
-
+## K-means Clustering
+* Identifies groups in the data 
+* I tried several values of K and am still undecided, but for now, visualizations are given for 11 clusters 
 ---
 # Early Visualization
-![](finalslides_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+![](finalslides_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+---
+
+# Audience
+
+1. Myself
+1. Linguists
+1. Computer scientists
+1. Social scientists
+1. Others interested in textual analysis, machine learning, and the visualization thereof
 
 ---
 
-### Audience
+# Chart Description
+* Simple Bar Chart (best for showing relative magnitude)
+  + Original features (dictionary frequency) on x axis
+  + Magnitude of correlation with principal component on y axis
+  + Sorted by correlation between PC and dictionary
+* Accompanied by radar chart showing how the components were used to cluster subreddits
 
-The end user intended audience is rather general, but can be divided into a few likely subgroups: 
+---
+# Show us the chart already... 
 
-1. Linguists interested in this method of textual analysis and the language of internet forums
-1. Computer sciencists interested in potential uses of distributed computing
-1. Social scientists studying mood and anxiety disorders such as major depression or generalized anxiety disorder
+Chart available here: https://kchalk.shinyapps.io/ClustersandCors/
 
-
-
+(Or it will be... someday)
 
 ---
 
-### Chart Description
-4.
-Description of the TYPE of graph (e.g. Bar chart, Sankey Dendogram, etc). 
+# An example for grading and stuff: 
 
-### Representaion Description
-5.
-Representation Description: What are you trying to show?
+```r
+od_num=65
+pc_num=21
 
+corlong &lt;- corlong %&gt;% 
+  mutate(dictcat=case_when(
+    orig %in% c('ifreq','wefreq','ipronfreq','theyfreq','youfreq','shehefreq','pronounfreq','ppronfreq')
+    ~ 'pronons',
+    orig %in% c('verbfreq','auxverbfreq','pastfreq','presentfreq','futurefreq')
+    ~ 'verbs',
+    orig %in% c('articlefreq','adverbfreq','prepsfreq','conjfreq','negatefreq','quantfreq','numberfreq','swearfreq','functfreq')
+    ~ 'otherfunctional',
+    orig %in% c('socialfreq','familyfreq','friendfreq','humansfreq')
+    ~ 'people',
+    orig %in% c('affectfreq','posemofreq','negemofreq','anxfreq','angerfreq','sadfreq')
+    ~ 'feelings',
+    orig %in% c('cogmechfreq','insightfreq','causefreq','discrepfreq','tentatfreq','certainfreq','inhibfreq','inclfreq','exclfreq')
+    ~ 'unlabeled',
+    orig %in% c('perceptfreq','seefreq','hearfreq','feelfreq')
+    ~ 'sense',
+    orig %in% c('biofreq','bodyfreq','healthfreq','sexualfreq','ingestfreq')
+    ~ 'bio',
+    orig %in% c('relativfreq','motionfreq','spacefreq','timefreq')
+    ~ 'physics',
+    orig %in% c('workfreq','achievefreq','leisurefreq','homefreq','moneyfreq','religfreq','deathfreq')
+    ~ 'life',
+    orig %in% c('assentfreq','nonflfreq','fillerfreq', 'absolutistfreq')
+    ~ 'idk'))
+```
 
 ---
-### How to read it and what to look for
-6.
-How to read it &amp; what to look for: How should a newbie to this graph approach interpreting it? What are the major 
-highlights of the graph type?
+# An example for grading and stuff (continued): 
+
+```r
+pcs &lt;- distinct(corlong['red_dim'])
+cs &lt;- distinct(clusters['X1'])
+
+pc='d2'
+clusterN=1 
+
+radar_color=c("#FF5A5F", "#FFB400", "#007A87",  "#8CE071", "#7B0051", "#00D1C1", "#FFAA91", "#B4A76C", "#9CA299", "#565A5C", "#00A04B", "#E54C20")
+
+workingdf &lt;- corlong %&gt;%  
+  filter(red_dim==pc) %&gt;% 
+  mutate(poscor=abs(correlation), sign=case_when(correlation&gt;=0~'pos', correlation&lt;0~'neg'))
+    
+corplot &lt;- ggplot(workingdf, aes(x=fct_reorder(orig,correlation,.desc = TRUE), y=poscor, color=sign, fill=dictcat))+
+  geom_col()+
+  theme_minimal()+
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))+
+  scale_fill_manual(values=radar_color)+
+  scale_color_manual(values=c('black','white'))
+    
+clusters &lt;- clusters %&gt;%  
+  mutate_at(vars(starts_with('d')),rescale)
+```
+---
+# An example for grading and stuff (continued): 
 
 
-7.
-Presentation: address how you are using annotation,  color, and general composition (e.g. how are things arranged, scale, etc.)
+```r
+clusterplot&lt;- ggradar(clusters[clusterN,], grid.label.size = 5,
+        group.point.size = 3,
+        axis.label.size = 4,
+        legend.text.size = 11,
+        group.colours = radar_colour[clusterN])+
+  theme(legend.position="bottom") 
+```
+
+---
+# Correlation plot for PCA 2
+![](finalslides_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+---
+
+# Radar plot for Cluster 1
+![](finalslides_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
