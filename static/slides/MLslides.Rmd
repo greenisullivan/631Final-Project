@@ -1,0 +1,115 @@
+---
+title: "Reddit Clusters"
+subtitle: "CS659 Final Project Slides"
+author: "Kendra Chalkley"
+date: "June 18, 2018" 
+output: 
+  xaringan::moon_reader:
+    css: [default, metropolis, metropolis-fonts]
+    nature:
+        highlightStyle: atelier-lakeside-light
+        highlightLines: true
+        countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+library(tidyverse)
+library(ggplot2)
+library(here) 
+library(ggridges)
+library(reshape2)
+
+#Uncomment for Serve Site
+#alldicts <- read_csv(here('631FinalProject', 'static','data','redditProject','subset_medoutput.csv'))  
+#Uncomment for Infinite Moonreader
+alldicts <- read_csv(here('static','data','redditProject','subset_medoutput.csv'))  
+nfreqs <- read_csv(here('static','data','redditProject','normal_subset_freqs.csv'))
+redfreqs <- read_csv(here('static','data','redditProject','reduced_normal_subset_freqs'))
+clusters <- read_csv(here('static','data','redditProject','subsetcenters.csv'))
+
+```
+
+
+---  
+# Data
+
+.pull-left[
+* Source: Reddit
+  + a website www.reddit.com
+* `subreddit` /r/ 
+  + <=20 character, case sensitive forum name
+* `posts` 
+  + a count of posts in each subreddit
+  + only `self` posts were included in this dataset
+  + posts < 100 words in length were filtered out of this dataset
+* `wordcount`
+  + a sum of the total number of words in all posts in that subreddit
+]
+--
+.pull-right[
+* `dictionary` 
+  + the name of one of 65 dictionaries
+  + 64 from an outdated version of Linguistic Inquiry and Word Count texual analysis software 
+  + plus an 'absolutist' dictionary curated by by AlMosaiwi and Johnstone(2018) as described in [In an Absolute State](http://journals.sagepub.com/doi/abs/10.1177/2167702617747074)  
+* `freq` the frequency of words from each dictionary $$\frac{number\ of\ words\ matching\ dictionary}{number\ of\ total\ words}$$
+]
+
+---
+# Original Data
+```{r, message=FALSE}
+#filter out mistakes of data collection process and typecast variables
+alldicts <- alldicts %>% 
+  mutate_at(vars(ends_with('freq')), as.numeric)
+
+#Tidy-ify 
+alldictslong <- alldicts %>% 
+  gather(key='dictionary',value='freq',-subreddit,-'count(1)',-'sum(wordcount)') %>% 
+  select(subreddit,dictionary,freq)%>%   
+  mutate_at('dictionary', as.factor) %>% 
+  group_by(subreddit) %>% 
+  arrange(desc(freq)) 
+ 
+#glimpse(alldictslong)
+```
+
+
+```{r}
+nfreqs %>% 
+  arrange(desc(absolutist)) %>% 
+  glimpse()
+```
+
+---
+# Further 'Pre' processing 
+## Principle Component Analysis
+* Effective when features are correlated with each other
+* In this case, can explain 90% of variation in dataset in 21 dimensions, or 80% in 11 
+
+## K-means Clustering
+* A starting point to select a more comprehensible subset of the data to play with 
+
+## Agglomerative Clustering
+* Bottom up
+* Mimimize all to all distance
+
+
+---
+# Transformed Data in PCA Space
+```{r}
+redfreqs['X1'] <- nfreqs['subreddit']
+
+redfreqs %>% 
+  arrange(desc(d1)) %>% 
+  glimpse()
+```
+
+---
+
+# Some Example Clusters
+ 
+The chart is hosted on (shinyapps.io)[https://kchalk.shinyapps.io/631Shiny/] 
+<iframe id="example1" src="https://kchalk.shinyapps.io/631Shiny/"
+style="border: non; width: 100%; height: 500px"
+frameborder="0">
+</iframe>
