@@ -5,11 +5,8 @@ author: "Kendra Chalkley"
 date: "June 18, 2018" 
 output: 
   xaringan::moon_reader:
-    css: [default, metropolis, metropolis-fonts]
-    nature:
-        highlightStyle: atelier-lakeside-light
-        highlightLines: true
-        countIncrementalSlides: false
+    css: xaringan-themer.css
+    lib_dir: libs
 ---
 
 ```{r setup, include=FALSE}
@@ -19,6 +16,10 @@ library(ggplot2)
 library(here) 
 library(ggridges)
 library(reshape2)
+
+library(xaringanthemer)
+
+duo_accent(primary_color = "#2f103f", secondary_color = "#246325")
 
 #Uncomment for Serve Site
 #alldicts <- read_csv(here('631FinalProject', 'static','data','redditProject','subset_medoutput.csv'))  
@@ -89,9 +90,13 @@ nfreqs %>%
 ## K-means Clustering
 * A starting point to select a more comprehensible subset of the data to play with 
 
+---
+# Target Processing 
 ## Agglomerative Clustering
+* Select sub-sub-subset of the data 
 * Bottom up
 * Mimimize all to all distance
+* Visualize?
 
 
 ---
@@ -108,8 +113,8 @@ redfreqs %>%
 
 # Some Example Clusters
  
-The chart is hosted on (shinyapps.io)[https://kchalk.shinyapps.io/631Shiny/] 
-<iframe id="example1" src="https://kchalk.shinyapps.io/631Shiny/"
+The chart is hosted on [shinyapps.io](https://kchalk.shinyapps.io/RedditClusters) 
+<iframe id="example1" src="https://kchalk.shinyapps.io/RedditClusters/"
 style="border: non; width: 100%; height: 500px"
 frameborder="0">
 </iframe>
