@@ -61,16 +61,25 @@ corlong &lt;- melt(correlations ) %&gt;%
 <h2>Plot Type: Tiled Correlations</h2>
 <div id="how-to-read-it-and-what-to-look-for" class="section level3">
 <h3>How to read it and what to look for</h3>
+<p>This graph is essentially a heat map of the correlations between the features. Each of the axes in this chart represents a set of features, and the values in the chart (in this case correlation) are represented by colored tiles.</p>
 </div>
 <div id="presentation-tips" class="section level3">
 <h3>Presentation Tips</h3>
+<p>For high dimensionality datasets, with a large number of features on one or both axes, this chart can be hard to interpret as it can be diffilcut to see which tiles represent which features. As such, this graph is best for sets of seven for fewer features, so that tiles are relatively close to their labels and columns are parseable. Alternatively, some method of highlighting important tiles and their matching labels could help address this.</p>
+<p>Additionally, because values are represented by color in this graph, which is not particularly effective at for communicating numerical specifics, this chart should not be used when actual values are important. It is more effective when the goal is to highlight extreme values or patterns.</p>
+<p>To represent correlation, a diverging color scheme with high saturation at the extremes and low saturation in the center is appropriate. This way color represents the binary value of sign and saturation shows distance of a value from zero.</p>
 </div>
 <div id="variations-and-alternatives" class="section level3">
 <h3>Variations and Alternatives</h3>
+<p>A more common use of this graph is to show, within a a dataset, covariance between features. In that version, the features on each axis identical would be the same and the values along the axis.</p>
+<p>would be 1 because the correlation would be complete because they are actually the same values. This plot is following that same theme, and while the same information is represented on both axes, it is after the PCA. The axes tell what features we’re looking at, and the tiles on the map are colored according to their values. In this case, they are colored by the magnitude of correlation.</p>
+<p>It has two discrete axes.</p>
+<p>Slightly more common to illustrate covariation within a data frame. Also used to represent successful and failed categorization (true positives and true negatives).</p>
 </div>
 </div>
 <div id="plot-description" class="section level2">
 <h2>Plot Description</h2>
+<p>Principal components on the x-axis and features one the y-axis, with tiles colored by correlation. The decision to have original on y and reduced on x is arbitrary. Then I kept the smaller number of values on the x-axis mostly for legibility of the labels. My color scheme ranges from dark purple to dark green with white in the center in order to make values that are far from 0 pop out. I was unable to find a way to highlight specific rows and columns, but that would be a useful addition to the plot.</p>
 <div id="representaton" class="section level3">
 <h3>Representaton</h3>
 <pre class="r"><code>ggplot(corlong, aes(x=red_dim, y=orig, fill=correlation))+

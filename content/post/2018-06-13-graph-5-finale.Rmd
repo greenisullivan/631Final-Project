@@ -75,7 +75,7 @@ In its current form, audience for this project is almost entirely myself and the
 
 * Simple Bar Chart (best for showing relative magnitude)
   + Original features (dictionary frequency) on x axis
-  + Magnitude of correlation with principal component on y axis
+  + Magnitude of correlation with principal component on y axis 
   + Sorted by correlation between PC and dictionary
 * Accompanied by radar chart showing how the components were used to cluster subreddits 
 

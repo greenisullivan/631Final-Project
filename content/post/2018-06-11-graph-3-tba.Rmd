@@ -72,18 +72,23 @@ In its current form, audience for this project is almost entirely myself and the
 ## Plot Type: Tiled Correlations
 
 ### How to read it and what to look for 
-This map is a heat map showing the correlations between the features on each axis. A more common use of this would be, within a a dataset, to show covariance between features. In that version, the features on each axis would be the same and the diagonal would be 1 because the correlation would be complete because they are actually the same values. This plot is following that same theme, and while the same information is represented on both axes, it is after the PCA. The axes tell what features we’re looking at, and the tiles on the map are colored according to their values. In this case, they are colored by the magnitude of correlation.
+This graph is essentially a heat map of the correlations between the features. Each of the axes in this chart represents a set of features, and the values in the chart (in this case correlation) are represented by colored tiles. 
+
+### Presentation Tips
+For high dimensionality datasets, with a large number of features on one or both axes, this chart can be hard to interpret as it can be diffilcut to see which tiles represent which features. As such, this graph is best for sets of seven for fewer features, so that tiles are relatively close to their labels and columns are parseable. Alternatively, some method of highlighting important tiles and their matching labels could help address this. 
+
+Additionally, because values are represented by color in this graph, which is not particularly effective at for communicating numerical specifics, this chart should not be used when actual values are important. It is more effective when the goal is to highlight extreme values or patterns.
+
+To represent correlation, a diverging color scheme with high saturation at the extremes and low saturation in the center is appropriate. This way color represents the binary value of sign and saturation shows distance of a value from zero. 
+
+### Variations and Alternatives
+A more common use of this graph is to show, within a a dataset, covariance between features. In that version, the features on each axis identical would be the same and the values along the axis. 
+
+would be 1 because the correlation would be complete because they are actually the same values. This plot is following that same theme, and while the same information is represented on both axes, it is after the PCA. The axes tell what features we’re looking at, and the tiles on the map are colored according to their values. In this case, they are colored by the magnitude of correlation.
 
 It has two discrete axes. 
 
-### Presentation Tips
-Having a large number on features, on one or both axes, makes it hard to keep track of which box lines up with which feature. To deal with this, we need the relevant values to be close to their label, or some method of highlighting, unless we are able to keep our %%%%? to a manageable number of features.
 
-Presenting values with color is not a high specificity presentation technique. This chart should not be used when actual values are important, as it is better when the goal is to highlight extreme values or patterns.
-
-Representing correlation, I found a color palette with high saturation at the extremes and low saturation in the middle to be the most effective, given that the distance from 0 is slightly more important than direction of correlation. 
-
-### Variations and Alternatives
 Slightly more common to illustrate covariation within a data frame. Also used to represent successful and failed categorization (true positives and true negatives). 
 
 ## Plot Description
