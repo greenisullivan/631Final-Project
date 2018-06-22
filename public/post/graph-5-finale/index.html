@@ -16,8 +16,8 @@
 <meta property="og:locale" content="nn_NO" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/post/graph-5-finale/" />
-<meta property="og:title" content="Graph 5: Finale-- Radar plus correlation bars" />
-<meta property="twitter:title" content="Graph 5: Finale-- Radar plus correlation bars">
+<meta property="og:title" content="Graph 5: Finale-- Shiny correlation plus radar" />
+<meta property="twitter:title" content="Graph 5: Finale-- Shiny correlation plus radar">
 
     <meta property="og:image" content="//images/image.jpg">
     <meta property="twitter:card" content="summary">
@@ -29,7 +29,7 @@
 <title>
 
 
-     CS631: Take a sad plot and make it better - Graph 5: Finale-- Radar plus correlation bars 
+     CS631: Take a sad plot and make it better - Graph 5: Finale-- Shiny correlation plus radar 
 
 </title>
 <link rel="canonical" href="/post/graph-5-finale/">
@@ -1101,14 +1101,59 @@ div.main .content .markdown pre, div.main .content .markdown pre code {
         <div class="content">
             <div class="page-heading">
 
-    Graph 5: Finale-- Radar plus correlation bars
+    Graph 5: Finale-- Shiny correlation plus radar
 
 </div>
 
             <div class="markdown">
                 
     
-    <pre class="r"><code>nfreqs &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;normal_subset_freqs.csv&#39;))</code></pre>
+    <div id="section-preliminaries" class="section level2">
+<h2>Preliminaries</h2>
+<div id="section-data" class="section level3">
+<h3>Data</h3>
+<p>All the graphs of this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits.</p>
+<p>The first dataset, called <code>allsubs</code> includes 5 columns :</p>
+<ol style="list-style-type: decimal">
+<li><code>subreddit</code> the name of one of ~120k subreddits</li>
+<li><code>posts</code> a count of (qualifying) posts in each subreddit</li>
+<li><code>wordcount</code> a sum of the total number of words in all posts in that subreddit</li>
+<li><code>abscount</code> a sum of the total number of ‘absolutist’ words in posts<br />
+</li>
+<li><code>freq</code> the frequency of absolutist words in qualifying posts, calculated as <span class="math display">\[\frac{number\ of\ absolutist\ words}{number\ of\ total\ words}\]</span></li>
+</ol>
+<pre class="r"><code>allsubs &lt;- read_tsv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;output.tsv&#39;))</code></pre>
+</div>
+<div id="section-audience" class="section level3">
+<h3>Audience</h3>
+<p>In its current form, audience for this project is almost entirely myself and the professors I’m trying to convince to help me with this project. Eventually I hope to research may be of interest to a larger group, including:</p>
+<ol style="list-style-type: decimal">
+<li>Linguists interested in this method of textual analysis and the language of internet forums</li>
+<li>Computer sciencists interested in the distributed computing or machine learning that went into this project</li>
+<li>Social scientists studying any of the many social groups involved on reddit.</li>
+</ol>
+</div>
+</div>
+<div id="section-plot-type-bar" class="section level2">
+<h2>Plot Type: Bar</h2>
+<div id="section-how-to-read-it-and-what-to-look-for" class="section level3">
+<h3>How to read it and what to look for</h3>
+</div>
+<div id="section-presentation-tips" class="section level3">
+<h3>Presentation Tips</h3>
+</div>
+<div id="section-variations-and-alternatives" class="section level3">
+<h3>Variations and Alternatives</h3>
+</div>
+</div>
+<div id="section-plot-description" class="section level2">
+<h2>Plot Description</h2>
+<div id="section-representaton" class="section level3">
+<h3>Representaton</h3>
+</div>
+<div id="section-methods" class="section level3">
+<h3>Methods</h3>
+<pre class="r"><code>nfreqs &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;normal_subset_freqs.csv&#39;))</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
 ##   .default = col_double(),
@@ -1235,8 +1280,10 @@ server &lt;- function(input, output) {
 }
 
 shinyApp(ui = ui, server = server)</code></pre>
-<iframe data-deferred-src="appaa030d47d96bd8123a3b1d27319d647d/?w=&amp;__subapp__=1" width="100%" height="400" class="shiny-frame shiny-frame-deferred"></iframe>
+<iframe data-deferred-src="app8a29012a660ed456a88d6b9df737dc05/?w=&amp;__subapp__=1" width="100%" height="400" class="shiny-frame shiny-frame-deferred"></iframe>
 <p>```</p>
+</div>
+</div>
 
 
             </div>

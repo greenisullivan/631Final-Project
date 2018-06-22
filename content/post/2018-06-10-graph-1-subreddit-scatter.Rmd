@@ -21,7 +21,7 @@ library(here)
 
 ## Data
 
-The first two graphs of this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits. 
+All the graphs of this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits. 
 
 The first dataset, called `allsubs` includes 5 columns : 
 

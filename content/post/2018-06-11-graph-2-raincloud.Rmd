@@ -20,7 +20,7 @@ library(here)
 ## Data
 
 
-The first two graphs of this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits. For the second of these graphs, I'm using a dataset called `alldicts` (in its long form: `alldictslong`) which includes many of the same columns as  `allsubs`, including absoltist frequecies of absolutist words as well as frequencies of words in 64 other dictinoaries: 
+All the graph in this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits. For the second of these graphs, I'm using a dataset called `alldicts` (in its long form: `alldictslong`) which includes many of the same columns as  `allsubs`, including absoltist frequecies of absolutist words as well as frequencies of words in 64 other dictinoaries: 
 
 1. `subreddit` the name of one of 29 subreddits (a somewhat arbitrarily collected subset of the 120k subreddits in the previous datset)
 1. `posts` a count of qualifying\footnote{only posts of 100+ words in length, marked as 'self' posts, ie. user generated text, not external links were counted in this data collection} posts in each subreddit

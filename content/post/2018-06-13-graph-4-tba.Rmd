@@ -32,6 +32,47 @@ library(shiny)
 ```
 
 
+
+## Preliminaries
+## Data
+
+All the graphs of this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits. 
+
+The first dataset, called `allsubs` includes 5 columns : 
+
+1. `subreddit` the name of one of ~120k subreddits
+1. `posts` a count of (qualifying\footnote{only posts of 100+ words in length, marked as 'self' posts, ie. user generated text, not external links were counted in this data collection}) posts in each subreddit
+1. `wordcount` a sum of the total number of words in all posts in that subreddit
+1.  `abscount` a sum of the total number of 'absolutist'\footnote{Examples of absolutist words are: `always', `never', `completely', etc. For definitions and selection process of `absolutist' words, see: \href{http://journals.sagepub.com/doi/abs/10.1177/2167702617747074}{In an Absolute State}  by AlMosaiwi and Johnstone (2018)} words in posts  
+1. `freq` the frequency of absolutist words in qualifying posts, calculated as $$\frac{number\ of\ absolutist\ words}{number\ of\ total\ words}$$
+
+
+```{r message=FALSE, warning=FALSE}
+allsubs <- read_tsv(here('static','data','redditProject','output.tsv'))
+```
+### Audience
+
+In its current form, audience for this project is almost entirely myself and the professors I'm trying to convince to help me with this project. Eventually I hope to research may be of interest to a larger group, including: 
+
+1. Linguists interested in this method of textual analysis and the language of internet forums
+1. Computer sciencists interested in the distributed computing or machine learning that went into this project
+1. Social scientists studying any of the many social groups involved on reddit. 
+
+## Plot Type: Tiled Correlations
+
+### How to read it and what to look for 
+
+### Presentation Tips
+
+### Variations and Alternatives
+
+
+## Plot Description
+
+### Representaton 
+
+### Methods
+
 ```{r}
 covariances <- read_csv(here('static','data','redditProject','subset_covariance.csv'))
 covlong <- gather(covariances, key=newDimension, value=covariance, -X1)

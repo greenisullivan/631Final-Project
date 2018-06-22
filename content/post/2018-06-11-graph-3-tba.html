@@ -13,6 +13,48 @@ meta_img: /images/image.jpg
 
 
 
+<div id="preliminaries" class="section level2">
+<h2>Preliminaries</h2>
+<div id="data" class="section level3">
+<h3>Data</h3>
+<p>All the graphs of this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits.</p>
+</div>
+<div id="audience" class="section level3">
+<h3>Audience</h3>
+<p>The end user intended audience is rather general, but can be divided into a few likely subgroups:</p>
+<ol style="list-style-type: decimal">
+<li>Linguists interested in this method of textual analysis and the language of internet forums</li>
+<li>Computer sciencists interested in potential uses of distributed computing</li>
+<li>Social scientists studying mood and anxiety disorders such as major depression or generalized anxiety disorder</li>
+</ol>
+<p>However, with this graph in particular, the most important thing is a quick glance at the data, and one should probably use actual statistics before deciding to subset the data as I’m about to suggest. Really, this graph is just part of an exploratory data analysis to call attention to the need to throw out some of our data points, and the primary audience is the graph maker.</p>
+<p>In its current form, audience for this project is almost entirely myself and the professors I’m trying to convince to help me with this project. Eventually I hope to research may be of interest to a larger group, including:</p>
+<ol style="list-style-type: decimal">
+<li>Linguists interested in this method of textual analysis and the language of internet forums</li>
+<li>Computer sciencists interested in the distributed computing or machine learning that went into this project</li>
+<li>Social scientists studying any of the many social groups involved on reddit.</li>
+</ol>
+</div>
+</div>
+<div id="plot-type-radar" class="section level2">
+<h2>Plot Type: Radar</h2>
+<div id="how-to-read-it-and-what-to-look-for" class="section level3">
+<h3>How to read it and what to look for</h3>
+</div>
+<div id="presentation-tips" class="section level3">
+<h3>Presentation Tips</h3>
+</div>
+<div id="variations-and-alternatives" class="section level3">
+<h3>Variations and Alternatives</h3>
+</div>
+</div>
+<div id="plot-description" class="section level2">
+<h2>Plot Description</h2>
+<div id="representaton" class="section level3">
+<h3>Representaton</h3>
+</div>
+<div id="methods" class="section level3">
+<h3>Methods</h3>
 <pre class="r"><code>alldicts &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;medoutput.csv&#39;))</code></pre>
 <pre><code>## Parsed with column specification:
 ## cols(
@@ -178,3 +220,5 @@ mutate_at(vars(starts_with(‘d’)),rescale) clusters</p>
 <p>ggradar(clusters[7,], grid.label.size = 5, group.point.size = 4, axis.label.size = 3, axis.labels = dlabels, legend.text.size = 9, group.colours = radar_colour[7])+ ggtitle(“subset point7”)+ theme(legend.position=“bottom”) + theme(text=element_text(family=‘Lato’))</p>
 <p>radar &lt;- ggradar(clusters, font.radar = ‘Lato’, grid.label.size = 0, group.point.size = 3, axis.label.size = 3, axis.labels = dlabels, legend.text.size = 0 )+ ggtitle(“7 cluster centers in 21 dimensions”)+ # facet_wrap(~X1)+ theme(legend.position=“bottom”) + theme(text=element_text(family=‘Lato’))</p>
 <p>radar #ggsave(“clusterRadar.pdf”,plot = radar)</p>
+</div>
+</div>

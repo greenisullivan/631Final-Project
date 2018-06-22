@@ -26,7 +26,44 @@ library(here)
 library(scales)
 ```
 
+## Preliminaries
+### Data
 
+All the graphs of this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits. 
+
+### Audience
+
+The end user intended audience is rather general, but can be divided into a few likely subgroups: 
+
+1. Linguists interested in this method of textual analysis and the language of internet forums
+1. Computer sciencists interested in potential uses of distributed computing
+1. Social scientists studying mood and anxiety disorders such as major depression or generalized anxiety disorder\footnote{Again I refer the reader to \href{http://journals.sagepub.com/doi/abs/10.1177/2167702617747074}{In an Absolute State}  by AlMosaiwi and Johnstone (2018)}
+
+However, with this graph in particular, the most important thing is a quick glance at the data, and one should probably use actual statistics before deciding to subset the data as I'm about to suggest. Really, this graph is just part of an exploratory data analysis to call attention to the need to throw out some of our data points, and the primary audience is the graph maker. 
+
+
+
+In its current form, audience for this project is almost entirely myself and the professors I'm trying to convince to help me with this project. Eventually I hope to research may be of interest to a larger group, including: 
+
+1. Linguists interested in this method of textual analysis and the language of internet forums
+1. Computer sciencists interested in the distributed computing or machine learning that went into this project
+1. Social scientists studying any of the many social groups involved on reddit. 
+
+
+## Plot Type: Radar
+
+### How to read it and what to look for 
+
+### Presentation Tips
+
+### Variations and Alternatives
+
+
+## Plot Description
+
+### Representaton 
+
+### Methods
 
 ```{r}
 alldicts <- read_csv(here('static','data','redditProject','medoutput.csv'))
