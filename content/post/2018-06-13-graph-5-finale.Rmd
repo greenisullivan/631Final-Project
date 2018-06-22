@@ -63,11 +63,13 @@ In its current form, audience for this project is almost entirely myself and the
 ## Plot Type: Bar
 
 ### How to read it and what to look for 
+This is a simple bar chart. It shows discrete categories on the x-axis and continuous values on the y-axis. In this case, I am also using color to represent the groups that categories fall into. I'm sorting the categories on the x-axis by values because there is no natural order to the categories.
 
 ### Presentation Tips
+Audiences are mostly familiar with the bar chart. Calling out axes labels and identifying color labels are important to the chart. 
 
 ### Variations and Alternatives
-
+Visually identical but conceptually different is the histogram, which using the same visual elements shows the distribution of a single variable, so the values of that variable would then be on the x-axis and the count of the number of elements having that value on the y-axis. In this case, we're comparing multiple categories rather than different values in a single category. Frequently numeric representation of the bars is included above the bars; bars are labeled with their numeric values, with the absolute values of the graphs being more important than the comparision between groups.
 
 ## Plot Description
 
