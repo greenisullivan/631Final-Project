@@ -15,8 +15,6 @@ library(forcats)
 library(ggridges)
 library(here)
 ```
-# Graph 2 Dictionary Rain cloud
-
 ## Data
 
 

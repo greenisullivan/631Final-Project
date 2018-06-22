@@ -1108,9 +1108,7 @@ div.main .content .markdown pre, div.main .content .markdown pre code {
             <div class="markdown">
                 
     
-    <div id="graph-2-dictionary-rain-cloud" class="section level1">
-<h1>Graph 2 Dictionary Rain cloud</h1>
-<div id="data" class="section level2">
+    <div id="data" class="section level2">
 <h2>Data</h2>
 <p>All the graph in this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits. For the second of these graphs, I’m using a dataset called <code>alldicts</code> (in its long form: <code>alldictslong</code>) which includes many of the same columns as <code>allsubs</code>, including absoltist frequecies of absolutist words as well as frequencies of words in 64 other dictinoaries:</p>
 <ol style="list-style-type: decimal">
@@ -1207,7 +1205,6 @@ alldictslong &lt;- alldicts %&gt;%
   facet_wrap(~dictcat,scales=&#39;free_y&#39;,ncol=3)</code></pre>
 <p>I am also tempted by a verion of this plot with free x scales, which would allow each dictionary category to use the full length of the x axis, as the actual values of frequencies are of less importance here than the shape of the distribution. But in general, this setting should be used with caution.</p>
 <p><img src="/post/2018-06-11-graph-2-raincloud_files/figure-html/unnamed-chunk-5-1.png" width="768" /></p>
-</div>
 </div>
 </div>
 

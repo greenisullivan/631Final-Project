@@ -16,8 +16,8 @@
 <meta property="og:locale" content="nn_NO" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="/post/graph-4-tba/" />
-<meta property="og:title" content="Graph 4: PCA Correlations " />
-<meta property="twitter:title" content="Graph 4: PCA Correlations ">
+<meta property="og:title" content="Graph 3: PCA Correlations " />
+<meta property="twitter:title" content="Graph 3: PCA Correlations ">
 
     <meta property="og:image" content="//images/image.jpg">
     <meta property="twitter:card" content="summary">
@@ -29,7 +29,7 @@
 <title>
 
 
-     CS631: Take a sad plot and make it better - Graph 4: PCA Correlations  
+     CS631: Take a sad plot and make it better - Graph 3: PCA Correlations  
 
 </title>
 <link rel="canonical" href="/post/graph-4-tba/">
@@ -1101,7 +1101,7 @@ div.main .content .markdown pre, div.main .content .markdown pre code {
         <div class="content">
             <div class="page-heading">
 
-    Graph 4: PCA Correlations 
+    Graph 3: PCA Correlations 
 
 </div>
 
@@ -1114,16 +1114,34 @@ div.main .content .markdown pre, div.main .content .markdown pre code {
 <div id="data" class="section level2">
 <h2>Data</h2>
 <p>All the graphs of this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits.</p>
-<p>The first dataset, called <code>allsubs</code> includes 5 columns :</p>
-<ol style="list-style-type: decimal">
-<li><code>subreddit</code> the name of one of ~120k subreddits</li>
-<li><code>posts</code> a count of (qualifying) posts in each subreddit</li>
-<li><code>wordcount</code> a sum of the total number of words in all posts in that subreddit</li>
-<li><code>abscount</code> a sum of the total number of ‘absolutist’ words in posts<br />
-</li>
-<li><code>freq</code> the frequency of absolutist words in qualifying posts, calculated as <span class="math display">\[\frac{number\ of\ absolutist\ words}{number\ of\ total\ words}\]</span></li>
-</ol>
-<pre class="r"><code>allsubs &lt;- read_tsv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;output.tsv&#39;))</code></pre>
+<p>Because <code>alldicts</code> is of such high dimensionality– 65 is a lot of features to keep track of– I ran principle component analysis (PCA) on the data to reduce the dimensionality to 21 features, while still explaining 90% of the variance within the dataset. The draw back of this approach is that the principle components can be difficult to interpret. Thus, the plots below explore the relationship/correlation between each of these the 21 principle components a the original 65 features.</p>
+<pre class="r"><code># original data
+nfreqs &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;normal_subset_freqs.csv&#39;))</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   subreddit = col_character()
+## )</code></pre>
+<pre><code>## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code># data in PCA space
+redfreqs &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;reduced_normal_subset_freqs&#39;))</code></pre>
+<pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   .default = col_double(),
+##   X1 = col_integer()
+## )
+## See spec(...) for full column specifications.</code></pre>
+<pre class="r"><code>#Orininal dimensionality, # of principle components used
+od_num=65
+pc_num=21
+
+# Calculate correlation
+correlations &lt;- cor(nfreqs[c(2:(od_num+1))],redfreqs[c(2:(pc_num+1))])
+
+#Tidyify
+corlong &lt;- melt(correlations ) %&gt;% 
+   setNames(c(&#39;orig&#39;, &#39;red_dim&#39;, &#39;correlation&#39;))</code></pre>
 <div id="audience" class="section level3">
 <h3>Audience</h3>
 <p>In its current form, audience for this project is almost entirely myself and the professors I’m trying to convince to help me with this project. Eventually I hope to research may be of interest to a larger group, including:</p>
@@ -1150,6 +1168,12 @@ div.main .content .markdown pre, div.main .content .markdown pre code {
 <h2>Plot Description</h2>
 <div id="representaton" class="section level3">
 <h3>Representaton</h3>
+<pre class="r"><code>ggplot(corlong, aes(x=red_dim, y=orig, fill=correlation))+
+  geom_tile()+ 
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
+  scale_fill_distiller(palette = &quot;PRGn&quot;)</code></pre>
+<p><img src="/post/2018-06-11-graph-3-tba_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>  #scale_fill_viridis(option=&#39;E&#39;)</code></pre>
 </div>
 <div id="methods" class="section level3">
 <h3>Methods</h3>
@@ -1166,76 +1190,7 @@ div.main .content .markdown pre, div.main .content .markdown pre code {
 ggplot(covlong, aes(x=newDimension, y=X1, fill=covariance))+
   geom_tile()+
   theme(axis.text.x = element_text(angle = 60, hjust = 1))</code></pre>
-<p><img src="/post/2018-06-13-graph-4-tba_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
-<pre class="r"><code>nfreqs &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;normal_subset_freqs.csv&#39;))</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   .default = col_double(),
-##   subreddit = col_character()
-## )</code></pre>
-<pre><code>## See spec(...) for full column specifications.</code></pre>
-<pre class="r"><code>redfreqs &lt;- read_csv(here(&#39;static&#39;,&#39;data&#39;,&#39;redditProject&#39;,&#39;reduced_normal_subset_freqs&#39;))</code></pre>
-<pre><code>## Warning: Missing column names filled in: &#39;X1&#39; [1]</code></pre>
-<pre><code>## Parsed with column specification:
-## cols(
-##   .default = col_double(),
-##   X1 = col_integer()
-## )
-## See spec(...) for full column specifications.</code></pre>
-<pre class="r"><code>od_num=65
-pc_num=21
-
-correlations &lt;- cor(nfreqs[c(2:(od_num+1))],redfreqs[c(2:(pc_num+1))])
-
-corlong &lt;- melt(correlations ) %&gt;% 
-   setNames(c(&#39;orig&#39;, &#39;red_dim&#39;, &#39;correlation&#39;))
-
-
-ggplot(corlong, aes(x=red_dim, y=orig, fill=correlation))+
-  geom_tile()+ 
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  scale_fill_distiller(palette = &quot;PRGn&quot;)</code></pre>
-<p><img src="/post/2018-06-13-graph-4-tba_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<pre class="r"><code>  #scale_fill_viridis(option=&#39;E&#39;)</code></pre>
-<pre class="r"><code>corlong &lt;- corlong %&gt;% 
-  mutate(dictcat=case_when(
-           orig %in% c(&#39;ifreq&#39;,&#39;wefreq&#39;,&#39;ipronfreq&#39;,&#39;theyfreq&#39;,&#39;youfreq&#39;,&#39;shehefreq&#39;,&#39;pronounfreq&#39;,&#39;ppronfreq&#39;)
-           ~ &#39;pronons&#39;,
-           orig %in% c(&#39;verbfreq&#39;,&#39;auxverbfreq&#39;,&#39;pastfreq&#39;,&#39;presentfreq&#39;,&#39;futurefreq&#39;)
-           ~ &#39;verbs&#39;,
-           orig %in% c(&#39;articlefreq&#39;,&#39;adverbfreq&#39;,&#39;prepsfreq&#39;,&#39;conjfreq&#39;,&#39;negatefreq&#39;,&#39;quantfreq&#39;,&#39;numberfreq&#39;,&#39;swearfreq&#39;,&#39;functfreq&#39;)
-           ~ &#39;otherfunctional&#39;,
-           orig %in% c(&#39;socialfreq&#39;,&#39;familyfreq&#39;,&#39;friendfreq&#39;,&#39;humansfreq&#39;)
-           ~ &#39;people&#39;,
-           orig %in% c(&#39;affectfreq&#39;,&#39;posemofreq&#39;,&#39;negemofreq&#39;,&#39;anxfreq&#39;,&#39;angerfreq&#39;,&#39;sadfreq&#39;)
-           ~ &#39;feelings&#39;,
-           orig %in% c(&#39;cogmechfreq&#39;,&#39;insightfreq&#39;,&#39;causefreq&#39;,&#39;discrepfreq&#39;,&#39;tentatfreq&#39;,&#39;certainfreq&#39;,&#39;inhibfreq&#39;,&#39;inclfreq&#39;,&#39;exclfreq&#39;)
-           ~ &#39;unlabeled&#39;,
-           orig %in% c(&#39;perceptfreq&#39;,&#39;seefreq&#39;,&#39;hearfreq&#39;,&#39;feelfreq&#39;)
-           ~ &#39;sense&#39;,
-           orig %in% c(&#39;biofreq&#39;,&#39;bodyfreq&#39;,&#39;healthfreq&#39;,&#39;sexualfreq&#39;,&#39;ingestfreq&#39;)
-           ~ &#39;bio&#39;,
-           orig %in% c(&#39;relativfreq&#39;,&#39;motionfreq&#39;,&#39;spacefreq&#39;,&#39;timefreq&#39;)
-           ~ &#39;physics&#39;,
-           orig %in% c(&#39;workfreq&#39;,&#39;achievefreq&#39;,&#39;leisurefreq&#39;,&#39;homefreq&#39;,&#39;moneyfreq&#39;,&#39;religfreq&#39;,&#39;deathfreq&#39;)
-           ~ &#39;life&#39;,
-           orig %in% c(&#39;assentfreq&#39;,&#39;nonflfreq&#39;,&#39;fillerfreq&#39;, &#39;absolutistfreq&#39;)
-           ~ &#39;idk&#39;))
-
-
-ggplot(corlong, aes(x=red_dim, y=orig, fill=correlation))+
-  geom_tile()+
-  theme(axis.text.x = element_text(angle = 60, hjust = 1))+
-  scale_fill_distiller(palette = &quot;PRGn&quot;)+
-  facet_wrap(~dictcat, scales=&#39;free&#39;)</code></pre>
-<p><img src="/post/2018-06-13-graph-4-tba_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<pre class="r"><code>  #scale_fill_viridis(option=&#39;E&#39;) 
-
-workingdf &lt;- corlong %&gt;% 
-  filter(red_dim==&#39;d1&#39;) %&gt;% 
-  mutate(poscor=abs(correlation))</code></pre>
-<p>ggplot(workingdf, aes(x=fct_reorder(orig,poscor,.desc = TRUE), y=poscor, fill=dictcat))+ geom_col()+ theme(axis.text.x = element_text(angle = 60, hjust = 1))</p>
-<p>workingdf &lt;- corlong %&gt;% filter(red_dim==‘d1’) %&gt;% mutate(poscor=abs(correlation), sign=case_when(correlation&gt;=0~‘pos’, correlation&lt;0~‘neg’))</p>
+<p><img src="/post/2018-06-11-graph-3-tba_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 </div>
 </div>
 

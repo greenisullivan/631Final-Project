@@ -17,7 +17,8 @@
       <pubDate>Mon, 11 Jun 2018 10:29:07 -0700</pubDate>
       
       <guid>/post/2018-06-11-graph-2-raincloud/</guid>
-      <description>Graph 2 Dictionary Rain cloud Data All the graph in this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits. For the second of these graphs, I’m using a dataset called alldicts (in its long form: alldictslong) which includes many of the same columns as allsubs, including absoltist frequecies of absolutist words as well as frequencies of words in 64 other dictinoaries:</description>
+      <description>Data All the graph in this series are generated from data concerning frequency with which words from assorted dictionaries appear in original reddit posts from various subreddits. For the second of these graphs, I’m using a dataset called alldicts (in its long form: alldictslong) which includes many of the same columns as allsubs, including absoltist frequecies of absolutist words as well as frequencies of words in 64 other dictinoaries:
+subreddit the name of one of 29 subreddits (a somewhat arbitrarily collected subset of the 120k subreddits in the previous datset) posts a count of qualifying posts in each subreddit wordcount a sum of the total number of words in all posts in that subreddit dictionary the name of one of 65 dictionaries– 64 from an outdated version of LIWC plus the absolutis dictionary mentioned above.</description>
     </item>
     
     <item>
