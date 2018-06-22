@@ -42,15 +42,18 @@ All the graphs of this series are generated from data concerning frequency with 
 ## Plot Type: Radar
 
 ### How to read it and what to look for 
+The radar chart has multiple axes in a radial format. It allows visualization of high dimensional data through the use of polar coordinates. The chart includes n evenly spaced lines radiating out from the center of a circle where n is the number of dimensions to be shown on the chart. This chart is less effective for communicating exact values than something like the bar chart because the angles between points on the graph are not the most imprtant elements of the graph, even though that is what the lines seem to most highlight. Lines are only included in this graph to increase the impact of differences in magnitude along the different axes.
 
 ### Presentation Tips
+This is not a common graph, and it's important to not interpret the area of the chart as its major component. Explaining each of the axes independently is important, and this graph should only be used for high level comparisions. 
 
 ### Variations and Alternatives
-
+(This graph doesn't convey specific information very well, so it's sort of a last resort for high dimensional data because there isn't another way to highlight/otherWord? this many dimensions.)
 
 ## Plot Description
 
 ### Representaton 
+In this graph, I'm showing the dataset of 65 dictionary scores for clusters of subreddits in a reduced PCA-space of 21 dimensions. Because in the reduced space the principal components can be challenging to interpret, I've labeled each of th dimesniosn an approximation of what dictionaries they correlate to. The actual values used to plot points along these dimensions are largely meaningless (arbitrary?). They're rescaled and meant only to show differeneces between cluster centers. Their actual values have little to no meaning. The stacked graph which includes all 11(7?) cluster centers on one graph is hard to read, so I present a single radar graph for each center. 
 
 ### Methods
 
